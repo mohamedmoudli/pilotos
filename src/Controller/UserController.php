@@ -5,9 +5,15 @@ namespace App\Controller;
 
 use App\Entity\AccessToken;
 use App\Entity\User;
+use App\Service\UserManager;
+use Doctrine\ORM\EntityManagerInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
+use OAuth2\IOAuth2;
+use OAuth2\OAuth2;
 use OAuth2\OAuth2ServerException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,9 +24,22 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Validator\Constraints\Json;
+
 
 class UserController extends AbstractController
 {
+    private $userManager;
+    private $encoderFactory;
+    private $ioauth;
+
+    public function __construct(UserManager $userManager, EncoderFactoryInterface $encoderFactory, IOAuth2 $ioauth)
+    {
+        $this->userManager = $userManager;
+        $this->encoderFactory = $encoderFactory;
+        $this->ioauth = $ioauth;
+    }
+
 
 
     /**
@@ -28,14 +47,17 @@ class UserController extends AbstractController
      */
     public function loginAction(Request $request)
     {
-        /** @var $um \FOS\UserBundle\Model\UserManager */
         $email = $request->get('email');
         $password = $request->get('password');
+        /** @var User $user */
+        $user = $this->userManager->getUserByEmail($email);
 
-        $um = $this->getUserManager();
-        $user = $um->findUserByEmail($email);
+        $encoder = $this->encoderFactory->getEncoder($user);
+//
+        $bool = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
 
-        if (!$user instanceof User || !$this->container->get('app.global.service')->checkUserPassword($user, $password)) {
+//
+        if (!$user instanceof User || !$bool) {
             return new JsonResponse(['message' => 'Invalid credentials'], 500);
         }
 
@@ -319,10 +341,7 @@ class UserController extends AbstractController
         try {
             return array_merge(
                 json_decode(
-                    $this
-                        ->get('fos_oauth_server.server')
-                        ->grantAccessToken($request2)
-                        ->getContent(), true
+                    $this->ioauth->grantAccessToken($request2)->getContent(), true
                 ), array(
                     'expires_at' => (new \DateTime())->getTimestamp() + $this->getParameter('token_lifetime'),
                     'user_id' => $user->getId(),

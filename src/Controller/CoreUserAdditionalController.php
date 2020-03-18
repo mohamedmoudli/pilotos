@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Constant\Constants;
+use App\Service\CoreUserAdditionalService;
+use App\Service\UserManager;
 use AppBundle\Entity\CoreAdminAdditional;
 use AppBundle\Entity\CoreAgency;
 use AppBundle\Entity\CoreRole;
@@ -10,15 +12,26 @@ use AppBundle\Entity\CoreRoleTransactionAccess;
 use App\Entity\User;
 use AppBundle\Entity\CoreUserAdditional;
 use AppBundle\Entity\CoreUserRole;
+use OAuth2\OAuth2;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class CoreUserAdditionalController extends AbstractController
 {
+
+
+    private $coreUserAdditionalService;
+
+    public function __construct(UserManager $userManager, CoreUserAdditionalService $coreUserAdditionalService)
+    {
+        $this->coreUserAdditionalService = $coreUserAdditionalService;
+
+    }
 
     /**
      * @Route(
@@ -33,7 +46,7 @@ class CoreUserAdditionalController extends AbstractController
      */
     public function createAction(Request $request)
     {
-        return $this->get('app.coreUserAdditional.service')->persist($request, 'create');
+        return $this->coreUserAdditionalService->persist($request, 'create');
     }
 
     /**
@@ -49,7 +62,7 @@ class CoreUserAdditionalController extends AbstractController
      */
     public function editAction(Request $request, User $user)
     {
-        return $this->get('app.coreUserAdditional.service')->persist($request, 'edit', $user);
+        return $this->coreUserAdditionalService->persist($request, 'edit', $user);
     }
 
     /**
@@ -83,7 +96,7 @@ class CoreUserAdditionalController extends AbstractController
      */
     public function getUsersWaitingForValidationAction(Request $request)
     {
-        return $this->container->get('app.coreUserAdditional.service')
+        return $this->coreUserAdditionalService
             ->getUserAdditionalsForPagination(Constants::STATUS_WAITING_FOR_VALIDATION, $request);
     }
 
