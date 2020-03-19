@@ -15,6 +15,7 @@ use AppBundle\Entity\CoreUserRole;
 use OAuth2\OAuth2;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,14 +25,6 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 class CoreUserAdditionalController extends AbstractController
 {
 
-
-    private $coreUserAdditionalService;
-
-    public function __construct(UserManager $userManager, CoreUserAdditionalService $coreUserAdditionalService)
-    {
-        $this->coreUserAdditionalService = $coreUserAdditionalService;
-
-    }
 
     /**
      * @Route(
@@ -44,9 +37,17 @@ class CoreUserAdditionalController extends AbstractController
      *      }
      *  )
      */
-    public function createAction(Request $request)
+    public function create(Request $request, $method, User $user = null , Container $container1)
     {
-        return $this->coreUserAdditionalService->persist($request, 'create');
+        $em = $this->getDoctrine()->getManager();
+        $content = json_decode($request->getContent());
+            $user = new User();
+
+            $user = $this->em->getRepository(User::class)->find($user->getId());
+            $user->setPlainPassword($content->password);
+            $user->addRole('ROLE_USER_ADDITIONAL');
+            $user->setStatus(Constants::STATUS_VALID);
+            $user->setEnabled(true);
     }
 
     /**
@@ -60,11 +61,22 @@ class CoreUserAdditionalController extends AbstractController
      *      }
      *  )
      */
-    public function editAction(Request $request, User $user)
+    public function edit(Request $request, $method, User $user = null , Container $container1)
     {
-        return $this->coreUserAdditionalService->persist($request, 'edit', $user);
-    }
+        $em = $this->getDoctrine()->getManager();
+        $content = json_decode($request->getContent());
 
+        if ($method === 'create') {
+            $user = $this->$container1->getToken()->getUser();
+            $user = new User();
+
+            $user = $this->em->getRepository(User::class)->find($user->getId());
+            $user->setPlainPassword($content->password);
+            $user->addRole('ROLE_USER_ADDITIONAL');
+            $user->setStatus(Constants::STATUS_VALID);
+            $user->setEnabled(true);
+        }
+    }
     /**
      * @Route("/api/core-user-additionals/check-unique-by-email/{email}",
      *     name="core_user_additional_check_unique_email",
@@ -86,76 +98,6 @@ class CoreUserAdditionalController extends AbstractController
         ));
     }
 
-    /**
-     * @Route(
-     *     name="core_user_additional_waiting_for_validation",
-     *     path="/api/core-user-additionals/waiting-for-validation",
-     *     methods={"GET","POST"},
-     *     defaults={"_api_resource_class"=CoreUserAdditional::class, "_api_collection_operation_name"="core_user_additional_waiting_for_validation"}
-     * )
-     */
-    public function getUsersWaitingForValidationAction(Request $request)
-    {
-        return $this->coreUserAdditionalService
-            ->getUserAdditionalsForPagination(Constants::STATUS_WAITING_FOR_VALIDATION, $request);
-    }
-
-    /**
-     * @Route("/api/core-user-additionals/change-status-in-organization/{id}/status/{status}", name="change_status_user_in_organization")
-     * @Method({"POST"})
-     */
-    public function changeUserStatusInOrganizationAction(Request $request, User $user, $status)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        if ($status === 'true') {
-            //validate
-            $user->setStatus(Constants::STATUS_VALID);
-            $user->setEnabled(true);
-            $content = json_decode($request->getContent());
-
-            $defaultAgency = $em->getRepository(CoreAgency::class)->findOneBy(array(
-                'isDefault' => true,
-
-            ));
-            $user->addCoreAgency($defaultAgency);
-
-            foreach ($content->coreRoles as $role) {
-                $coreRole = $em->getRepository(CoreRole::class)->find($role);
-                $coreUserRole = new CoreUserRole();
-                $coreUserRole->setCoreRole($coreRole);
-                $coreUserRole->setCoreOrganizationTypeId($request->get('selectedOrganizationType'));
-                $coreUserRole->setCoreOrganizationId($request->get('selectedOrganization'));
-                $coreUserRole->setCoreUser($user);
-                $user->addCoreUserRole($coreUserRole);
-            }
-
-            // token to validate account
-            $tokenGenerator = $this->container->get('fos_user.util.token_generator');
-            $token = $tokenGenerator->generateToken();
-            $user->setConfirmationToken($token);
-
-            // sending email after changing status to validated
-            $this->container->get('app.send_email')->send('be806',
-                $user->getLocale(), [$user->getEmail()], null, null, [],
-                ['email' => $user->getEmail(), 'organization' => $user->getCoreOrganizations()->first()->getCompanyName()]);
-
-            $em->persist($user);
-            $em->flush();
-
-            return new Response('', 201);
-        } else {
-            // refuse
-            $user->setStatus(Constants::STATUS_REFUSED);
-            $user->setEnabled(false);
-            $em->persist($user);
-            $em->flush();
-
-            // sending email after changing status to refused
-            $this->container->get('app.send_email')->send('38ef6', $user->getLocale(), [$user->getEmail()]);
-            return new Response('', 201);
-        }
-    }
 
     /**
      * @Route(

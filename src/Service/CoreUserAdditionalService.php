@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,13 +24,15 @@ class CoreUserAdditionalService
         $this->emInj = $em;
     }
 
-    public function persist(Request $request, $method, User $user = null)
+    public function persist(Request $request, $method, User $user = null , Container $container1)
     {
+        $em = $this->getDoctrine()->getManager();
         $content = json_decode($request->getContent());
 
         if ($method === 'create') {
-            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            $user = $this->$container1->getToken()->getUser();
             $user = new User();
+
             $user = $this->em->getRepository(User::class)->find($user->getId());
             $user ->setPlainPassword($content->password);
             $user ->addRole('ROLE_USER_ADDITIONAL');

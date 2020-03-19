@@ -4,8 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    oauth2_client_id: 1_2vegeleawbgg0wc8cw8w44sk4osokcwo0k088o4wswoo48008w
-    oauth2_client_secret: 5klg83i2t88wkkscockos84oskwso48g80k8c8k000s4w8skg8
+    oauth2_client_id: 1_64mwfcv15604o00s0o8w444o84w4g848o0ckwok00kggc44skg
+    oauth2_client_secret: 584ixy6qpyo8c8woogs4k8wg0o0s80s4ow0sgco4woos8o0o4o
+    token_lifetime: 345600
+
 services:
     # default configuration for services in *this* file
     _defaults:

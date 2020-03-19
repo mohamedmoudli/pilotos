@@ -5,8 +5,12 @@ namespace App\Controller;
 
 use App\Entity\AccessToken;
 use App\Entity\User;
+use App\Entity\User1;
+use App\Service\AouthService;
 use App\Service\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\UserBundle\Controller\RegistrationController;
+use FOS\UserBundle\Controller\ResettingController;
 use FOS\UserBundle\Model\UserManagerInterface;
 use FOS\UserBundle\Util\TokenGeneratorInterface;
 use OAuth2\IOAuth2;
@@ -20,10 +24,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints\Json;
 
 
@@ -32,30 +38,55 @@ class UserController extends AbstractController
     private $userManager;
     private $encoderFactory;
     private $ioauth;
+    private $aouthservice;
 
-    public function __construct(UserManager $userManager, EncoderFactoryInterface $encoderFactory, IOAuth2 $ioauth)
+    public function __construct(UserManager $userManager, EncoderFactoryInterface $encoderFactory)
     {
         $this->userManager = $userManager;
         $this->encoderFactory = $encoderFactory;
-        $this->ioauth = $ioauth;
+
     }
+
+
+    /**
+     * @Route("/register", name="app_register")
+     */
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        if ($request->isMethod('POST')) {
+            dump('lllllllll');
+            $user = new User();
+            $user->setEmail($request->request->get('email'));
+            $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            dump($user);
+            $em->flush();
+            return new JsonResponse('success');
+        }
+
+        return new JsonResponse('error1');
+    }
+
+
+
+
+
 
 
 
     /**
      * @Route("/signin", name="signin")
      */
-    public function loginAction(Request $request)
+    public function loginAction(Request $request , OAuth2 $oauth2)
     {
         $email = $request->get('email');
         $password = $request->get('password');
         /** @var User $user */
+
         $user = $this->userManager->getUserByEmail($email);
-
         $encoder = $this->encoderFactory->getEncoder($user);
-//
         $bool = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
-
 //
         if (!$user instanceof User || !$bool) {
             return new JsonResponse(['message' => 'Invalid credentials'], 500);
@@ -66,26 +97,26 @@ class UserController extends AbstractController
         }
 
 
-        return new JsonResponse($this->getAuth2Token($user, $request));
+        return new JsonResponse($this->getAuth2Token($user, $request ,  $oauth2));
     }
 
     /**
      * @Route("/signup", name="signup")
      */
-    public function signUpAction(Request $request)
+    public function signUpAction(Request $request , RegistrationController $registrationController , AouthService $aouthService)
     {
-        return $this->get('app.registration.service')->signUp($request);
+        return $aouthService->signup($request);
     }
 
     /**
      * @Route("/token/refresh/{id}", name="token_refresh")
      */
-    public function refreshTokenAction(Request $request, User $user)
+    public function refreshTokenAction(Request $request, User $user ,OAuth2 $oauth2)
     {
-        return new JsonResponse($this->getRefreshToken($request, $user));
+        return new JsonResponse($this->getRefreshToken($request, $user , $oauth2));
     }
 
-    protected function getRefreshToken(Request $request, User $user)
+    protected function getRefreshToken(Request $request, User $user , OAuth2 $oauth2)
     {
         $em = $this->getDoctrine()->getManager();
         $refreshToken = $request->get('refresh_token');
@@ -102,7 +133,7 @@ class UserController extends AbstractController
                         'refresh_token' => $refreshToken
                     ]);
 
-                    $createToken = json_decode($this->get('fos_oauth_server.server')->grantAccessToken($request2)->getContent(), true);
+                    $createToken = json_decode($this->$oauth2->grantAccessToken($request2)->getContent(), true);
                     $newToken = $createToken['access_token'];
                     $newAccessToken = $em->getRepository(AccessToken::class)->findOneBy(array('user' => $user, 'token' => $newToken));
                     $attributes = $accessToken->getAttributes();
@@ -153,7 +184,7 @@ class UserController extends AbstractController
                         'refresh_token' => $accessToken->getAttributes()['refresh_token']
                     ]);
 
-                    $createToken = json_decode($this->get('fos_oauth_server.server')->grantAccessToken($request2)->getContent(), true);
+                    $createToken = json_decode($this->$oauth2->grantAccessToken($request2)->getContent(), true);
                     $newToken = $createToken['access_token'];
                     $newAccessToken = $em->getRepository(AccessToken::class)->findOneBy(array('user' => $user, 'token' => $newToken));
                     $attributes = $accessToken->getAttributes();
@@ -218,7 +249,7 @@ class UserController extends AbstractController
                     'refresh_token' => $refreshToken
                 ]);
 
-                $createToken = $this->get('fos_oauth_server.server')->grantAccessToken($request2)->getContent();
+                $createToken = $this->$oauth2->grantAccessToken($request2)->getContent();
                 try {
                     return array_merge(
                         json_decode(
@@ -248,7 +279,7 @@ class UserController extends AbstractController
     /**
      * @Route("/check-email-to-reset/{email}", name="check_email_to_reset")
      */
-    public function checkEmailToResetAction($email)
+    public function checkEmailToResetAction($email ,   \Swift_Mailer $mailer)
     {
 
         $um = $this->getUserManager();
@@ -259,7 +290,6 @@ class UserController extends AbstractController
         }
 
         /** @var $tokenGenerator TokenGeneratorInterface */
-        $tokenGenerator = $this->get('fos_user.util.token_generator');
         $user->setConfirmationToken($tokenGenerator->generateToken());
 
         // send resetting email
@@ -267,39 +297,100 @@ class UserController extends AbstractController
         $this->container->get('app.send_email')->send('d8dbd',  [$user->getEmail(), $this->container->getParameter('mailer_test_address')], null, null, [], ['email' =>$email, 'resettingLink' => $data, 'url' => $this->container->getParameter("front_url")]);
 
         $user->setPasswordRequestedAt(new \DateTime());
-        $this->get('fos_user.user_manager')->updateUser($user);
+        /** @var $userManager UserManagerInterface */
+        $userManager->updateUser($user);
 
 
         return new JsonResponse(['isValid' => true], 200);
     }
 
     /**
-     * @Route("/reset-password", name="reset_password")
+     * @Route("/reset_password/{token}", name="app_reset_password")
      */
-    public function resetAction(Request $request)
+    public function resetPassword(Request $request,string $token, UserPasswordEncoderInterface $passwordEncoder)
     {
 
-        $token = $request->get('token');
-        /** @var $userManager \FOS\UserBundle\Model\UserManagerInterface */
-        $userManager = $this->get('fos_user.user_manager');
+        if ($request->isMethod('POST')) {
+            $entityManager = $this->getDoctrine()->getManager();
 
-        $user = $userManager->findUserByConfirmationToken($token);
+            $user = $entityManager->getRepository(User::class)->findOneByResetToken($token);
+            /* @var $user User */
 
-        if (null === $user) {
-            throw new NotFoundHttpException(sprintf('The user with "confirmation token" does not exist for value "%s"', $token));
+            if ($user === null) {
+                return new JsonResponse('Unknown Token',500);
+            }
+
+            $user->setResetToken(null);
+            $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
+            $entityManager->flush();
+
+            return new JsonResponse('password updated',200);
+        }else {
+
+            return new JsonResponse('Not allowed',500);
+
         }
 
-        /** @var $tokenGenerator TokenGeneratorInterface */
-        $tokenGenerator = $this->get('fos_user.util.token_generator');
-        $user->setConfirmationToken($tokenGenerator->generateToken());
-
-        $user->setPlainPassword($request->get('password'));
-        $userManager->updateUser($user);
-
-        $this->container->get('app.send_email')->send('794b1', [$user->getEmail()]);
-
-        return new Response('true', 200);
     }
+
+
+    /**
+     * @Route("/forgotten_password", name="app_forgotten_password")
+     */
+    public function forgottenPassword(
+        Request $request,
+        UserPasswordEncoderInterface $encoder,
+        \Swift_Mailer $mailer,
+        TokenGeneratorInterface $tokenGenerator
+    ): Response
+    {
+
+        if ($request->isMethod('POST')) {
+
+            $email = $request->request->get('email');
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $user = $entityManager->getRepository(User::class)->findOneByEmail($email);
+            /* @var $user User */
+
+            if ($user === null) {
+                return  new JsonResponse('Email Inconnu',500);
+            }
+            $token = $tokenGenerator->generateToken();
+
+            try{
+                $user->setResetToken($token);
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $this->addFlash('warning', $e->getMessage());
+                return  new JsonResponse('false',500);
+            }
+
+            $url = $this->generateUrl('app_reset_password', array('token' => $token), UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $message = (new \Swift_Message('Forgot Password'))
+                ->setFrom('mohamedmouldi95@gmail.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    "le token pour reseter votre mot de passe : " . $url,
+                    'text/html'
+                );
+
+           $res = $mailer->send($message);
+
+            dump($res);
+            $this->addFlash('notice', 'Mail envoyé');
+            return  new JsonResponse('true',200);
+        }
+
+        return new JsonResponse('false',500);
+    }
+
+
+
+
+
+
 
     /**
      * @Route("/activate", name="activate_user")
@@ -327,7 +418,7 @@ class UserController extends AbstractController
         return new Response('true', 200);
     }
 
-    protected function getAuth2Token(User $user, Request $request)
+    protected function getAuth2Token(User $user, Request $request,OAuth2 $oauth2)
     {
         $request2 = new Request();
         $request2->query->add([
@@ -337,21 +428,23 @@ class UserController extends AbstractController
             'username' => $user->getUsername(),
             'password' => $request->get('password')
         ]);
-
         try {
-            return array_merge(
+            return new JsonResponse(array_merge(
                 json_decode(
-                    $this->ioauth->grantAccessToken($request2)->getContent(), true
+                    $oauth2
+                        ->grantAccessToken($request2)
+                        ->getContent(), true
                 ), array(
                     'expires_at' => (new \DateTime())->getTimestamp() + $this->getParameter('token_lifetime'),
                     'user_id' => $user->getId(),
-
+                    'email' => $user->getEmail(),
                 )
-            );
+            ));
         } catch (OAuth2ServerException $e) {
-            return $e->getHttpResponse();
+            return new JsonResponse($e->getHttpResponse());
         }
     }
+
 
     protected function getUserManager()
     {
@@ -478,10 +571,10 @@ class UserController extends AbstractController
      *     defaults={"_api_resource_class"=CoreUser::class, "_api_operation_name"="clear_token"}
      * )
      */
-    public function clearTokenAction(User $user)
+    public function clearTokenAction(User $user ,OAuth2 $oauth2)
     {
         $em = $this->getDoctrine()->getManager();
-        $token = $this->get('fos_oauth_server.server')->getBearerToken();
+        $token = $oauth2->getBearerToken();
         $accessToken = $em->getRepository(AccessToken::class)->findOneBy(array('user' => $user, 'token' => $token));
         $ids = array();
         $ids[] = $accessToken->getId();
@@ -524,10 +617,10 @@ class UserController extends AbstractController
      *     methods={"POST"}
      * )
      */
-    public function setAttributesUserAction(Request $request)
+    public function setAttributesUserAction(Request $request ,OAuth2 $oauth2)
     {
         $em = $this->getDoctrine()->getManager();
-        $token = $this->get('fos_oauth_server.server')->getBearerToken();
+        $token = $this->$oauth2->getBearerToken();
         if ($request->get('original_user')) {
             $user = $em->getRepository(User::class)->find(intval($request->get('original_user')));
         } else {
