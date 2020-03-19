@@ -17,6 +17,7 @@ use OAuth2\IOAuth2;
 use OAuth2\OAuth2;
 use OAuth2\OAuth2ServerException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,18 +50,18 @@ class UserController extends AbstractController
 
 
     /**
-     * @Route("/register", name="app_register")
+     * @Route("/register1", name="app_register")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         if ($request->isMethod('POST')) {
-            dump('lllllllll');
             $user = new User();
             $user->setEmail($request->request->get('email'));
+            $user->setUsername($request->request->get('username'));
             $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
-            dump($user);
+
             $em->flush();
             return new JsonResponse('success');
         }
@@ -110,6 +111,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/token/refresh/{id}", name="token_refresh")
+     * @ParamConverter("id", class="User", options={"id": "id"})
      */
     public function refreshTokenAction(Request $request, User $user ,OAuth2 $oauth2)
     {
