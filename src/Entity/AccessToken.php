@@ -29,4 +29,27 @@ class AccessToken extends BaseAccessToken
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $user;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Attributes;
+
+    /**
+     * @return mixed
+     */
+    public function getAttributes()
+    {
+        return $this->Attributes;
+    }
+
+    /**
+     * @param mixed $Attributes
+     */
+    public function setAttributes($Attributes): void
+    {
+        $this->Attributes = $Attributes;
+    }
+
+
 }

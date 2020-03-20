@@ -111,7 +111,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/token/refresh/{id}", name="token_refresh")
-     * @ParamConverter("id", class="User", options={"id": "id"})
+     * @ParamConverter("id", options={"id": "id"})
      */
     public function refreshTokenAction(Request $request, User $user ,OAuth2 $oauth2)
     {
@@ -123,6 +123,8 @@ class UserController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $refreshToken = $request->get('refresh_token');
         $token = $request->get('token');
+
+        /** @var AccessToken $accessToken */
         $accessToken = $em->getRepository(AccessToken::class)->findOneBy(array('user' => $user, 'token' => $token));
         if (!is_null($accessToken)) {
             if (isset($accessToken->getAttributes()['refresh_token'])) {
@@ -251,12 +253,13 @@ class UserController extends AbstractController
                     'refresh_token' => $refreshToken
                 ]);
 
-                $createToken = $this->$oauth2->grantAccessToken($request2)->getContent();
+
                 try {
                     return array_merge(
                         json_decode(
-                            $createToken
-                            , true
+                            $oauth2
+                                ->grantAccessToken($request2)
+                                ->getContent(), true
                         ), array(
                             'expires_at' => (new \DateTime())->getTimestamp() + $this->getParameter('token_lifetime'),
                             'user_id' => $user->getId(),
@@ -536,7 +539,7 @@ class UserController extends AbstractController
     /**
      * @Route(
      *     name="verify-currentPassword",
-     *     path="/api/core-users/verify-currentPassword/{id}",
+     *     path="/core-users/verify-currentPassword/{id}",
      *     methods={"POST"},
      * )
      */
@@ -545,11 +548,12 @@ class UserController extends AbstractController
         try {
             $content = json_decode($request->getContent());
             $currentPassword=$content->valueToCheck;
+            dump($currentPassword);
             /** @var EncoderFactoryInterface $factory */
-            $factory = $this->get('security.encoder_factory');
             $encoder = $factory->getEncoder($coreUser);
 
             $bool = $encoder->isPasswordValid($coreUser->getPassword(), $currentPassword, $coreUser->getSalt());
+            dump($bool);
             return new JsonResponse(array(
                 'verify' => $bool
             ));
@@ -568,7 +572,7 @@ class UserController extends AbstractController
     /**
      * @Route(
      *     name="clear_token",
-     *     path="/api/core-users/{id}/clear_token",
+     *     path="/core-users/{id}/clear_token",
      *     methods={"GET"},
      *     defaults={"_api_resource_class"=CoreUser::class, "_api_operation_name"="clear_token"}
      * )
