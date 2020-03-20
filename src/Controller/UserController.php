@@ -19,6 +19,7 @@ use OAuth2\OAuth2ServerException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,6 +41,7 @@ class UserController extends AbstractController
     private $encoderFactory;
     private $ioauth;
     private $aouthservice;
+    private $retryTtl;
 
     public function __construct(UserManager $userManager, EncoderFactoryInterface $encoderFactory)
     {
@@ -253,7 +255,6 @@ class UserController extends AbstractController
                     'refresh_token' => $refreshToken
                 ]);
 
-
                 try {
                     return array_merge(
                         json_decode(
@@ -284,29 +285,18 @@ class UserController extends AbstractController
     /**
      * @Route("/check-email-to-reset/{email}", name="check_email_to_reset")
      */
-    public function checkEmailToResetAction($email ,   \Swift_Mailer $mailer)
+    public function checkEmailToResetAction( Request $request , $email ,   \Swift_Mailer $mailer)
     {
+        $username = $request->query->get('username');
 
-        $um = $this->getUserManager();
-        $user = $um->findUserByEmail($email);
-
-        if (!$user instanceof User) {
-            return new JsonResponse(['isValid' => false], 200);
+        if (empty($username)) {
+            // the user does not come from the sendEmail action
+            return new RedirectResponse($this->generateUrl('fos_user_resetting_request'));
         }
 
-        /** @var $tokenGenerator TokenGeneratorInterface */
-        $user->setConfirmationToken($tokenGenerator->generateToken());
-
-        // send resetting email
-        $data = "<a href='" . $this->container->getParameter("front_url") . "session/reset/" . $user->getConfirmationToken() . "'>Reset</a>";
-        $this->container->get('app.send_email')->send('d8dbd',  [$user->getEmail(), $this->container->getParameter('mailer_test_address')], null, null, [], ['email' =>$email, 'resettingLink' => $data, 'url' => $this->container->getParameter("front_url")]);
-
-        $user->setPasswordRequestedAt(new \DateTime());
-        /** @var $userManager UserManagerInterface */
-        $userManager->updateUser($user);
-
-
-        return new JsonResponse(['isValid' => true], 200);
+        return $this->render('@FOSUser/Resetting/check_email.html.twig', array(
+            'tokenLifetime' => ceil($this->retryTtl / 3600),
+        ));
     }
 
     /**

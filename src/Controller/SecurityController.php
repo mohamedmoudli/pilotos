@@ -8,11 +8,14 @@
 
 namespace App\Controller;
 
+use App\Service\UserManager;
+use OAuth2\OAuth2ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -21,6 +24,19 @@ use OAuth2\OAuth2;
 
 class SecurityController extends AbstractController
 {
+    private $userManager;
+    private $encoderFactory;
+    private $ioauth;
+    private $aouthservice;
+    private $retryTtl;
+
+    public function __construct(UserManager $userManager, EncoderFactoryInterface $encoderFactory)
+    {
+        $this->userManager = $userManager;
+        $this->encoderFactory = $encoderFactory;
+
+    }
+
     /**
      * @Route("/logout", name="app_logout")
      */
@@ -29,16 +45,19 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
     /**
-     * @Route("/login", name="app_login")
+     * @Route("/login1", name="app_login")
      */
     public function login(Request $request,OAuth2 $oauth2): JsonResponse
     {
-        if ($request->isMethod('GET')) {
+        if ($request->isMethod('POST')) {
 
             // $content = json_decode($request->getContent(),true);
             // $password = $request->request->get('password');
             $entityManager = $this->getDoctrine()->getManager();
-            $user = $entityManager->getRepository(User::class)->findOneByUsername($request->get("username"));
+            $res = $request->get("email");
+            $user = $this->userManager->getUserByEmail($res);
+            dump($res);
+            dump($user);
             /* @var $user User */
 
             if ($user === null) {
