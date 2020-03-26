@@ -7,6 +7,13 @@ parameters:
     oauth2_client_id: 1_64mwfcv15604o00s0o8w444o84w4g848o0ckwok00kggc44skg
     oauth2_client_secret: 584ixy6qpyo8c8woogs4k8wg0o0s80s4ow0sgco4woos8o0o4o
     token_lifetime: 345600
+    front_url: 127.0.0.1:4200
+    mailer_test_address: mohamedmouldi95@gmail.com
+    mailer_smtp_host: smtp.gmail.com
+    mailer_smtp_port: 465
+    mailer_smtp_user: mohamedmouldi95@gmail.com
+    mailer_smtp_password: 09846331
+
 
 services:
     # default configuration for services in *this* file

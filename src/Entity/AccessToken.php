@@ -31,25 +31,24 @@ class AccessToken extends BaseAccessToken
     protected $user;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @return mixed
      */
-    private $Attributes;
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
 
     /**
      * @return mixed
      */
-    public function getAttributes()
+    public function getUser()
     {
-        return $this->Attributes;
+        return $this->user;
     }
 
-    /**
-     * @param mixed $Attributes
-     */
-    public function setAttributes($Attributes): void
-    {
-        $this->Attributes = $Attributes;
-    }
+
 
 
 }

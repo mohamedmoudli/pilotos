@@ -4,13 +4,17 @@
 namespace App\Service;
 
 
+use App\Entity\AccessToken;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use http\Client;
 use OAuth2\OAuth2;
 use OAuth2\OAuth2ServerException;
+use Psr\Container\ContainerInterface;
 use Symfony\Bridge\Doctrine\Messenger\DoctrineClearEntityManagerWorkerSubscriber;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\TokenParser\SetTokenParser;
 
 class UserManager
 {
@@ -28,6 +32,7 @@ class UserManager
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         return $user;
     }
+
     public function tokenAction(Request $request)
     {
         try {
@@ -35,6 +40,7 @@ class UserManager
         } catch (OAuth2ServerException $e) {
             return $e->getHttpResponse();
         }
+
     }
 
 }
