@@ -116,6 +116,8 @@ class UserController extends AbstractController
             $user = new User();
             $user->setEmail($request->request->get('email'));
             $user->setUsername($request->request->get('username'));
+            $res = array( 'roles' => $request->request->get('roles'));
+            $user->setRoles($res);
             $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
