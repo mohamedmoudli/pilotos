@@ -62,6 +62,7 @@ class UserController extends AbstractController
             $res = $request->get("email");
             $password = $request->get('password');
             $user = $this->userManager->getUserByEmail($res);
+            /** @var $user User */
             $encoder = $this->encoderFactory->getEncoder($user);
             $bool = $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt());
 
@@ -92,6 +93,7 @@ class UserController extends AbstractController
                         'expires_at' => (new \DateTime())->getTimestamp() + $this->getParameter('token_lifetime'),
                         'user_id' => $user->getId(),
                         'email' => $user->getEmail(),
+                        'roles' => $user->getRoles(),
                     )
                 ));
             } catch (OAuth2ServerException $e) {
@@ -191,6 +193,7 @@ class UserController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             /* @var $user User */
             $user = $entityManager->getRepository(User::class)->findOneByResetToken($token);
+            dump($user);
 
             /* @var $user User */
 
@@ -342,7 +345,7 @@ class UserController extends AbstractController
     /**
      * @Route(
      *     name="clear_token",
-     *     path="/core-users/{id}/clear_token",
+     *     path="/core-users/clear_token/{id}",
      *     methods={"GET"}
      * )
      */
