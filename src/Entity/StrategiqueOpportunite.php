@@ -9,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass="App\Repository\ProcessusRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\StrategiqueOpportuniteRepository")
  */
-class Processus
+class StrategiqueOpportunite
 {
     /**
      * @ORM\Id()
@@ -23,20 +23,10 @@ class Processus
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Processus;
+    private $NomStrategique;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $IndicateurPerformance;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Pilote;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="ProcessLie")
+     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="Stategique")
      */
     private $opportunites;
 
@@ -45,46 +35,19 @@ class Processus
         $this->opportunites = new ArrayCollection();
     }
 
-
-
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProcessus(): ?string
+    public function getNomStrategique(): ?string
     {
-        return $this->Processus;
+        return $this->NomStrategique;
     }
 
-    public function setProcessus(string $Processus): self
+    public function setNomStrategique(string $NomStrategique): self
     {
-        $this->Processus = $Processus;
-
-        return $this;
-    }
-
-    public function getIndicateurPerformance(): ?string
-    {
-        return $this->IndicateurPerformance;
-    }
-
-    public function setIndicateurPerformance(string $IndicateurPerformance): self
-    {
-        $this->IndicateurPerformance = $IndicateurPerformance;
-
-        return $this;
-    }
-
-    public function getPilote(): ?string
-    {
-        return $this->Pilote;
-    }
-
-    public function setPilote(string $Pilote): self
-    {
-        $this->Pilote = $Pilote;
+        $this->NomStrategique = $NomStrategique;
 
         return $this;
     }
@@ -101,7 +64,7 @@ class Processus
     {
         if (!$this->opportunites->contains($opportunite)) {
             $this->opportunites[] = $opportunite;
-            $opportunite->setProcessLie($this);
+            $opportunite->setStategique($this);
         }
 
         return $this;
@@ -112,14 +75,11 @@ class Processus
         if ($this->opportunites->contains($opportunite)) {
             $this->opportunites->removeElement($opportunite);
             // set the owning side to null (unless already changed)
-            if ($opportunite->getProcessLie() === $this) {
-                $opportunite->setProcessLie(null);
+            if ($opportunite->getStategique() === $this) {
+                $opportunite->setStategique(null);
             }
         }
 
         return $this;
     }
-
-
-
 }

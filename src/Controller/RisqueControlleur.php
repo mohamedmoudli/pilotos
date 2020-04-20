@@ -115,8 +115,13 @@ class RisqueControlleur extends AbstractController
                 $strategique = $pipertinanteObj->getStrategiqueRisque();
                 $processlie = new Processus();
                 $processlie = $pipertinanteObj->getProcessus();
-                $numAction = new PlanDeAction();
-                $numAction = $pipertinanteObj->getPlanDeActions();
+                $numActions = new PlanDeAction();
+                $numActions = $pipertinanteObj->getPlanDeActions();
+                foreach ($numActions as  $numAction ){
+                    $historique->addNumeroAction($numAction);
+                }
+
+
 
 
 
@@ -124,12 +129,6 @@ class RisqueControlleur extends AbstractController
                 $historique->setCriticite($pipertinanteObj->getCriticite());
 
                 $historique->setDecision($pipertinanteObj->getDecision());
-
-                $serializer = new Serializer([new ObjectNormalizer()]);
-                $response1 = $serializer->normalize($numAction, 'json', ["attributes" => ['id' ]]);
-                dump($response1);
-
-                $historique->setNumeroAction($numAction->getId());
 
 
 

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,9 +58,15 @@ class HistoriqueRisque
     private $DateENregistrement;
 
     /**
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\PlanDeAction", mappedBy="historiqueRisque")
      */
-    private $NumeroAction = [];
+    private $NumeroAction;
+
+    public function __construct()
+    {
+        $this->NumeroAction = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -151,15 +159,36 @@ class HistoriqueRisque
         return $this;
     }
 
-    public function getNumeroAction(): ?array
+    /**
+     * @return Collection|PlanDeAction[]
+     */
+    public function getNumeroAction(): Collection
     {
         return $this->NumeroAction;
     }
 
-    public function setNumeroAction(?array $NumeroAction): self
+    public function addNumeroAction(PlanDeAction $numeroAction): self
     {
-        $this->NumeroAction = $NumeroAction;
+        if (!$this->NumeroAction->contains($numeroAction)) {
+            $this->NumeroAction[] = $numeroAction;
+            $numeroAction->setHistoriqueRisque($this);
+        }
 
         return $this;
     }
+
+    public function removeNumeroAction(PlanDeAction $numeroAction): self
+    {
+        if ($this->NumeroAction->contains($numeroAction)) {
+            $this->NumeroAction->removeElement($numeroAction);
+            // set the owning side to null (unless already changed)
+            if ($numeroAction->getHistoriqueRisque() === $this) {
+                $numeroAction->setHistoriqueRisque(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

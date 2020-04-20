@@ -9,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass="App\Repository\ProcessusRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CategorieOpportuniteRepository")
  */
-class Processus
+class CategorieOpportunite
 {
     /**
      * @ORM\Id()
@@ -23,20 +23,15 @@ class Processus
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Processus;
+    private $NomStrategique;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $IndicateurPerformance;
+    private $NomCategorie;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Pilote;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="ProcessLie")
+     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="CategorieOpportunite")
      */
     private $opportunites;
 
@@ -45,46 +40,31 @@ class Processus
         $this->opportunites = new ArrayCollection();
     }
 
-
-
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProcessus(): ?string
+    public function getNomStrategique(): ?string
     {
-        return $this->Processus;
+        return $this->NomStrategique;
     }
 
-    public function setProcessus(string $Processus): self
+    public function setNomStrategique(string $NomStrategique): self
     {
-        $this->Processus = $Processus;
+        $this->NomStrategique = $NomStrategique;
 
         return $this;
     }
 
-    public function getIndicateurPerformance(): ?string
+    public function getNomCategorie(): ?string
     {
-        return $this->IndicateurPerformance;
+        return $this->NomCategorie;
     }
 
-    public function setIndicateurPerformance(string $IndicateurPerformance): self
+    public function setNomCategorie(string $NomCategorie): self
     {
-        $this->IndicateurPerformance = $IndicateurPerformance;
-
-        return $this;
-    }
-
-    public function getPilote(): ?string
-    {
-        return $this->Pilote;
-    }
-
-    public function setPilote(string $Pilote): self
-    {
-        $this->Pilote = $Pilote;
+        $this->NomCategorie = $NomCategorie;
 
         return $this;
     }
@@ -101,7 +81,7 @@ class Processus
     {
         if (!$this->opportunites->contains($opportunite)) {
             $this->opportunites[] = $opportunite;
-            $opportunite->setProcessLie($this);
+            $opportunite->setCategorieOpportunite($this);
         }
 
         return $this;
@@ -112,14 +92,11 @@ class Processus
         if ($this->opportunites->contains($opportunite)) {
             $this->opportunites->removeElement($opportunite);
             // set the owning side to null (unless already changed)
-            if ($opportunite->getProcessLie() === $this) {
-                $opportunite->setProcessLie(null);
+            if ($opportunite->getCategorieOpportunite() === $this) {
+                $opportunite->setCategorieOpportunite(null);
             }
         }
 
         return $this;
     }
-
-
-
 }
