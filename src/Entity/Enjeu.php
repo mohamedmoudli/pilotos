@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Enjeu
      * @ORM\JoinColumn(nullable=false)
      */
     private $typeEnjeu;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Objective", mappedBy="Enjeu")
+     */
+    private $objectives;
+
+    public function __construct()
+    {
+        $this->objectives = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -92,6 +104,37 @@ class Enjeu
     public function setTypeEnjeu(?TypeEnjeu $typeEnjeu): self
     {
         $this->typeEnjeu = $typeEnjeu;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Objective[]
+     */
+    public function getObjectives(): Collection
+    {
+        return $this->objectives;
+    }
+
+    public function addObjective(Objective $objective): self
+    {
+        if (!$this->objectives->contains($objective)) {
+            $this->objectives[] = $objective;
+            $objective->setEnjeu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeObjective(Objective $objective): self
+    {
+        if ($this->objectives->contains($objective)) {
+            $this->objectives->removeElement($objective);
+            // set the owning side to null (unless already changed)
+            if ($objective->getEnjeu() === $this) {
+                $objective->setEnjeu(null);
+            }
+        }
 
         return $this;
     }

@@ -125,6 +125,16 @@ class PlanDeAction
      */
     private $historiqueRisque;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\HistoriqueOpportunite", inversedBy="NumeroAction")
+     */
+    private $historiqueOpportunite;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Objective", inversedBy="NumAction")
+     */
+    private $objective;
+
 
     public function getId(): ?int
     {
@@ -331,6 +341,30 @@ class PlanDeAction
     public function setHistoriqueRisque(?HistoriqueRisque $historiqueRisque): self
     {
         $this->historiqueRisque = $historiqueRisque;
+
+        return $this;
+    }
+
+    public function getHistoriqueOpportunite(): ?HistoriqueOpportunite
+    {
+        return $this->historiqueOpportunite;
+    }
+
+    public function setHistoriqueOpportunite(?HistoriqueOpportunite $historiqueOpportunite): self
+    {
+        $this->historiqueOpportunite = $historiqueOpportunite;
+
+        return $this;
+    }
+
+    public function getObjective(): ?Objective
+    {
+        return $this->objective;
+    }
+
+    public function setObjective(?Objective $objective): self
+    {
+        $this->objective = $objective;
 
         return $this;
     }

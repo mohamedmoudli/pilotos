@@ -20,10 +20,7 @@ class CategorieOpportunite
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $NomStrategique;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -45,17 +42,6 @@ class CategorieOpportunite
         return $this->id;
     }
 
-    public function getNomStrategique(): ?string
-    {
-        return $this->NomStrategique;
-    }
-
-    public function setNomStrategique(string $NomStrategique): self
-    {
-        $this->NomStrategique = $NomStrategique;
-
-        return $this;
-    }
 
     public function getNomCategorie(): ?string
     {
