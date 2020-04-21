@@ -27,10 +27,7 @@ class CategorieOpportunite
      */
     private $NomCategorie;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="CategorieOpportunite")
-     */
-    private $opportunites;
+
 
     public function __construct()
     {
@@ -55,34 +52,4 @@ class CategorieOpportunite
         return $this;
     }
 
-    /**
-     * @return Collection|Opportunite[]
-     */
-    public function getOpportunites(): Collection
-    {
-        return $this->opportunites;
-    }
-
-    public function addOpportunite(Opportunite $opportunite): self
-    {
-        if (!$this->opportunites->contains($opportunite)) {
-            $this->opportunites[] = $opportunite;
-            $opportunite->setCategorieOpportunite($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOpportunite(Opportunite $opportunite): self
-    {
-        if ($this->opportunites->contains($opportunite)) {
-            $this->opportunites->removeElement($opportunite);
-            // set the owning side to null (unless already changed)
-            if ($opportunite->getCategorieOpportunite() === $this) {
-                $opportunite->setCategorieOpportunite(null);
-            }
-        }
-
-        return $this;
-    }
 }

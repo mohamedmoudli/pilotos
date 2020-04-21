@@ -35,10 +35,7 @@ class Processus
      */
     private $Pilote;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="ProcessLie")
-     */
-    private $opportunites;
+
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Objective", mappedBy="ProcessLi")
@@ -47,7 +44,7 @@ class Processus
 
     public function __construct()
     {
-        $this->opportunites = new ArrayCollection();
+
         $this->objectives = new ArrayCollection();
     }
 
@@ -95,36 +92,7 @@ class Processus
         return $this;
     }
 
-    /**
-     * @return Collection|Opportunite[]
-     */
-    public function getOpportunites(): Collection
-    {
-        return $this->opportunites;
-    }
 
-    public function addOpportunite(Opportunite $opportunite): self
-    {
-        if (!$this->opportunites->contains($opportunite)) {
-            $this->opportunites[] = $opportunite;
-            $opportunite->setProcessLie($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOpportunite(Opportunite $opportunite): self
-    {
-        if ($this->opportunites->contains($opportunite)) {
-            $this->opportunites->removeElement($opportunite);
-            // set the owning side to null (unless already changed)
-            if ($opportunite->getProcessLie() === $this) {
-                $opportunite->setProcessLie(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|Objective[]

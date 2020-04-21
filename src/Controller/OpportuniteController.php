@@ -136,12 +136,14 @@ class OpportuniteController extends AbstractController
             $res1 = intval($idprocess);
 
             $res2 = intval($idcategorie);
-            $strategiquerisque = $em->getRepository(StrategiqueOpportunite::class)->findOneById($res);
+            $strategiqueOpportunite = $em->getRepository(StrategiqueOpportunite::class)->findOneById($res);
+            $strategiqueOpportunite = new StrategiqueOpportunite();
 
+            $opportunite->setStrategiqueEvaluation($strategiqueOpportunite);
 
-            $opportunite->setStrategiqueEvaluation($strategiquerisque);
-            $processRisque = $em->getRepository(Processus::class)->findOneById($res1);
-            $opportunite->setProcessLieReevaluation($processRisque);
+            $processOpportunite = $em->getRepository(Processus::class)->findOneById($res1);
+            $processOpportunite = new Processus();
+            $opportunite->setProcessLieReevaluation($processOpportunite );
 
             $opportunite->setEtatOpportuniteReevaluation($request->request->get('EtatOpportuniteReevaluation'));
 
@@ -198,5 +200,23 @@ class OpportuniteController extends AbstractController
 //        $res = json_encode($partieinteresse);
 
         return new JsonResponse('sucess');
+    }
+
+    /**
+     * @Route("/GetOpportuniteByAction", name="GetOpportuniteByAction")
+     * methods={"GET"}
+     */
+    public function GetOpportuniteByAction(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $categoriesrisque = $entityManager->getRepository(Opportunite::class)->findAll();
+        $serializer = new Serializer([new ObjectNormalizer()]);
+        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,'Description' ,'CourtTerm' , 'MoyenTerm' ,'LongTerm' ,
+            'DateIdentification' ,  'Coherence' , 'Allignement' ,'Presence' , 'Competences' , 'Continute' , 'Gain' , 'Efforts' ,
+             'Aventages' , 'Poids' , 'Decision' ,'Stategique'  , 'ProcessLie' , 'CategorieOpportunite' , 'EtatOpportunite' ,
+            'EffortReevaluation' , 'AventageReevaluation' , 'PoidsReevaluation' ,'DecisionReevaluation' , 'StrategiqueEvaluation' ,
+            'ProcessLieReevaluation' , 'EtatOpportuniteReevaluation' , 'Commentaire' , 'NumAction'=> ['id' , 'Origine'] ,
+            'NumActionReevaluation'=> ['id' , 'Origine'] ]]);
+        return new JsonResponse($response);
     }
 }

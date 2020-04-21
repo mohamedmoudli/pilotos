@@ -25,10 +25,7 @@ class StrategiqueOpportunite
      */
     private $NomStrategique;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Opportunite", mappedBy="Stategique")
-     */
-    private $opportunites;
+
 
     public function __construct()
     {
@@ -52,34 +49,4 @@ class StrategiqueOpportunite
         return $this;
     }
 
-    /**
-     * @return Collection|Opportunite[]
-     */
-    public function getOpportunites(): Collection
-    {
-        return $this->opportunites;
-    }
-
-    public function addOpportunite(Opportunite $opportunite): self
-    {
-        if (!$this->opportunites->contains($opportunite)) {
-            $this->opportunites[] = $opportunite;
-            $opportunite->setStategique($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOpportunite(Opportunite $opportunite): self
-    {
-        if ($this->opportunites->contains($opportunite)) {
-            $this->opportunites->removeElement($opportunite);
-            // set the owning side to null (unless already changed)
-            if ($opportunite->getStategique() === $this) {
-                $opportunite->setStategique(null);
-            }
-        }
-
-        return $this;
-    }
 }

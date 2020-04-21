@@ -40,12 +40,12 @@ class PlanDeAction
     }
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
     private $Action;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="string", length=255)
      */
     private $DateDebutPanifie;
 

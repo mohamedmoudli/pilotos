@@ -94,7 +94,7 @@ class RisqueControlleur extends AbstractController
     }
 
     /**
-     * @Route("/savehistoriqueRisque", name="savehistorique")
+     * @Route("/savehistoriqueRisque", name="savehistoriqueRisque")
      * methods={"GET"}
      */
     public function savehistoriqueRisque(Request $request )
@@ -165,7 +165,7 @@ class RisqueControlleur extends AbstractController
 
 
     /**
-     * @Route("/GetbyRisque", name="GetbyRisque")
+     * @Route("/GetByAction", name="GetbyRisque")
      * methods={"GET"}
      */
     public function GetRisque(Request $request)
@@ -175,6 +175,19 @@ class RisqueControlleur extends AbstractController
         dump($categoriesrisque);
 
         return new JsonResponse($categoriesrisque);
+    }
+
+    /**
+     * @Route("/GethistoriqueRisque", name="GethistoriqueRisque")
+     * methods={"GET"}
+     */
+    public function GethistoriqueRisque(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $categoriesrisque = $entityManager->getRepository(HistoriqueRisque::class)->findAll();
+        $serializer = new Serializer([new ObjectNormalizer()]);
+        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Criticite' , 'Decision' , 'EtatRisque' , 'Commentaires' ,  'Processlie'  , 'Strategique' ,'DateENregistrement' , 'NumeroAction'=> ['id' , 'Origine']]]);
+        return new JsonResponse($response);
     }
 
 }
