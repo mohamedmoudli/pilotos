@@ -23,21 +23,6 @@ class PlanDeAction
      */
     private $Origine;
 
-    /**
-     * @return mixed
-     */
-    public function getOrigine()
-    {
-        return $this->Origine;
-    }
-
-    /**
-     * @param mixed $Origine
-     */
-    public function setOrigine($Origine): void
-    {
-        $this->Origine = $Origine;
-    }
 
     /**
      * @ORM\Column(type="integer")
@@ -107,31 +92,37 @@ class PlanDeAction
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Risque", inversedBy="planDeActions")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $Risque;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Opportunite", inversedBy="NumAction")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $opportunite;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Opportunite", inversedBy="NumActionReevaluation")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $opportuniteReevalution;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\HistoriqueRisque", inversedBy="NumeroAction")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $historiqueRisque;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\HistoriqueOpportunite", inversedBy="NumeroAction")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $historiqueOpportunite;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Objective", inversedBy="NumAction")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $objective;
 
@@ -141,29 +132,41 @@ class PlanDeAction
         return $this->id;
     }
 
-    public function getAction(): ?string
+    /**
+     * @return mixed
+     */
+    public function getAction()
     {
         return $this->Action;
     }
 
-    public function setAction(string $Action): self
+    /**
+     * @param mixed $Action
+     */
+    public function setAction($Action): void
     {
         $this->Action = $Action;
-
-        return $this;
     }
 
-    public function getDateDebutPanifie(): ?\DateTimeInterface
+    /**
+     * @return mixed
+     */
+    public function getDateDebutPanifie()
     {
         return $this->DateDebutPanifie;
     }
 
-    public function setDateDebutPanifie(\DateTimeInterface $DateDebutPanifie): self
+    /**
+     * @param mixed $DateDebutPanifie
+     */
+    public function setDateDebutPanifie($DateDebutPanifie): void
     {
         $this->DateDebutPanifie = $DateDebutPanifie;
-
-        return $this;
     }
+
+
+
+
 
     public function getDelai(): ?string
     {
@@ -368,5 +371,22 @@ class PlanDeAction
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOrigine()
+    {
+        return $this->Origine;
+    }
+
+    /**
+     * @param mixed $Origine
+     */
+    public function setOrigine($Origine): void
+    {
+        $this->Origine = $Origine;
+    }
+
 
 }

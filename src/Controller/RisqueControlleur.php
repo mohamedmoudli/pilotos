@@ -186,7 +186,8 @@ class RisqueControlleur extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(HistoriqueRisque::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Criticite' , 'Decision' , 'EtatRisque' , 'Commentaires' ,  'Processlie'  , 'Strategique' ,'DateENregistrement' , 'NumeroAction'=> ['id' , 'Origine']]]);
+        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Criticite' , 'Decision' , 'EtatRisque' ,
+            'Commentaires' ,  'Processlie'  , 'Strategique' ,'DateENregistrement' , 'NumeroAction'=> ['id' , 'Origine']]]);
         return new JsonResponse($response);
     }
 

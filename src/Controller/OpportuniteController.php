@@ -219,4 +219,19 @@ class OpportuniteController extends AbstractController
             'NumActionReevaluation'=> ['id' , 'Origine'] ]]);
         return new JsonResponse($response);
     }
+
+
+    /**
+     * @Route("/GethistoriqueOpportunite", name="GethistoriqueOpportunite")
+     * methods={"GET"}
+     */
+    public function GethistoriqueRisque(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $historiqueOpportunite = $entityManager->getRepository(HistoriqueOpportunite::class)->findAll();
+        $serializer = new Serializer([new ObjectNormalizer()]);
+        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Etat' , 'Commentaire'  ,
+             'NumeroAction'=> ['id' , 'Origine']]]);
+        return new JsonResponse($response);
+    }
 }
