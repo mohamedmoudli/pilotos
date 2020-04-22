@@ -9,9 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass="App\Repository\ObjectiveRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\HistoriqueObjectiveRepository")
  */
-class Objective
+class HistoriqueObjective
 {
     /**
      * @ORM\Id()
@@ -26,37 +26,37 @@ class Objective
     private $Description;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Temps1;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Temps2;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Temps3;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Temps4;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Temps2020;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Temps2021;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $IndicateurPredefini;
 
@@ -68,7 +68,7 @@ class Objective
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $ObjectiveAAtendre;
+    private $ObjectiveAttendre;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -78,12 +78,17 @@ class Objective
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $EtatActuel;
+    private $EtatActuelIndicateur;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $Avencement;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $EtatActuelIndiacteur;
+    private $EtatActuel;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -91,24 +96,22 @@ class Objective
     private $Commentaire;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Enjeu")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="date")
      */
-    private $Enjeu;
+    private $Date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Processus", inversedBy="objectives")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=255)
      */
-    private $ProcessLie;
+    private $Enjeux;
 
     /**
-     * @ORM\Column(type="float"  , nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private $Avencement;
+    private $Processlie;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PlanDeAction", mappedBy="objective")
+     * @ORM\OneToMany(targetEntity="App\Entity\PlanDeAction", mappedBy="historiqueObjective")
      */
     private $NumAction;
 
@@ -139,7 +142,7 @@ class Objective
         return $this->Temps1;
     }
 
-    public function setTemps1(string $Temps1): self
+    public function setTemps1(?string $Temps1): self
     {
         $this->Temps1 = $Temps1;
 
@@ -151,7 +154,7 @@ class Objective
         return $this->Temps2;
     }
 
-    public function setTemps2(string $Temps2): self
+    public function setTemps2(?string $Temps2): self
     {
         $this->Temps2 = $Temps2;
 
@@ -163,7 +166,7 @@ class Objective
         return $this->Temps3;
     }
 
-    public function setTemps3(string $Temps3): self
+    public function setTemps3(?string $Temps3): self
     {
         $this->Temps3 = $Temps3;
 
@@ -175,7 +178,7 @@ class Objective
         return $this->Temps4;
     }
 
-    public function setTemps4(string $Temps4): self
+    public function setTemps4(?string $Temps4): self
     {
         $this->Temps4 = $Temps4;
 
@@ -187,7 +190,7 @@ class Objective
         return $this->Temps2020;
     }
 
-    public function setTemps2020(string $Temps2020): self
+    public function setTemps2020(?string $Temps2020): self
     {
         $this->Temps2020 = $Temps2020;
 
@@ -199,7 +202,7 @@ class Objective
         return $this->Temps2021;
     }
 
-    public function setTemps2021(string $Temps2021): self
+    public function setTemps2021(?string $Temps2021): self
     {
         $this->Temps2021 = $Temps2021;
 
@@ -211,7 +214,7 @@ class Objective
         return $this->IndicateurPredefini;
     }
 
-    public function setIndicateurPredefini(string $IndicateurPredefini): self
+    public function setIndicateurPredefini(?string $IndicateurPredefini): self
     {
         $this->IndicateurPredefini = $IndicateurPredefini;
 
@@ -230,14 +233,14 @@ class Objective
         return $this;
     }
 
-    public function getObjectiveAAtendre(): ?string
+    public function getObjectiveAttendre(): ?string
     {
-        return $this->ObjectiveAAtendre;
+        return $this->ObjectiveAttendre;
     }
 
-    public function setObjectiveAAtendre(string $ObjectiveAAtendre): self
+    public function setObjectiveAttendre(string $ObjectiveAttendre): self
     {
-        $this->ObjectiveAAtendre = $ObjectiveAAtendre;
+        $this->ObjectiveAttendre = $ObjectiveAttendre;
 
         return $this;
     }
@@ -254,6 +257,30 @@ class Objective
         return $this;
     }
 
+    public function getEtatActuelIndicateur(): ?string
+    {
+        return $this->EtatActuelIndicateur;
+    }
+
+    public function setEtatActuelIndicateur(string $EtatActuelIndicateur): self
+    {
+        $this->EtatActuelIndicateur = $EtatActuelIndicateur;
+
+        return $this;
+    }
+
+    public function getAvencement(): ?float
+    {
+        return $this->Avencement;
+    }
+
+    public function setAvencement(?float $Avencement): self
+    {
+        $this->Avencement = $Avencement;
+
+        return $this;
+    }
+
     public function getEtatActuel(): ?string
     {
         return $this->EtatActuel;
@@ -262,18 +289,6 @@ class Objective
     public function setEtatActuel(string $EtatActuel): self
     {
         $this->EtatActuel = $EtatActuel;
-
-        return $this;
-    }
-
-    public function getEtatActuelIndiacteur(): ?string
-    {
-        return $this->EtatActuelIndiacteur;
-    }
-
-    public function setEtatActuelIndiacteur(string $EtatActuelIndiacteur): self
-    {
-        $this->EtatActuelIndiacteur = $EtatActuelIndiacteur;
 
         return $this;
     }
@@ -290,38 +305,38 @@ class Objective
         return $this;
     }
 
-    public function getEnjeu(): ?Enjeu
+    public function getDate(): ?\DateTimeInterface
     {
-        return $this->Enjeu;
+        return $this->Date;
     }
 
-    public function setEnjeu(?Enjeu $Enjeu): self
+    public function setDate(\DateTimeInterface $Date): self
     {
-        $this->Enjeu = $Enjeu;
+        $this->Date = $Date;
 
         return $this;
     }
 
-    public function getProcessLie(): ?Processus
+    public function getEnjeux(): ?string
     {
-        return $this->ProcessLie;
+        return $this->Enjeux;
     }
 
-    public function setProcessLie(?Processus $ProcessLie): self
+    public function setEnjeux(string $Enjeux): self
     {
-        $this->ProcessLie = $ProcessLie;
+        $this->Enjeux = $Enjeux;
 
         return $this;
     }
 
-    public function getAvencement(): ?float
+    public function getProcesslie(): ?string
     {
-        return $this->Avencement;
+        return $this->Processlie;
     }
 
-    public function setAvencement(float $Avencement): self
+    public function setProcesslie(string $Processlie): self
     {
-        $this->Avencement = $Avencement;
+        $this->Processlie = $Processlie;
 
         return $this;
     }
@@ -338,7 +353,7 @@ class Objective
     {
         if (!$this->NumAction->contains($numAction)) {
             $this->NumAction[] = $numAction;
-            $numAction->setObjective($this);
+            $numAction->setHistoriqueObjective($this);
         }
 
         return $this;
@@ -349,8 +364,8 @@ class Objective
         if ($this->NumAction->contains($numAction)) {
             $this->NumAction->removeElement($numAction);
             // set the owning side to null (unless already changed)
-            if ($numAction->getObjective() === $this) {
-                $numAction->setObjective(null);
+            if ($numAction->getHistoriqueObjective() === $this) {
+                $numAction->setHistoriqueObjective(null);
             }
         }
 

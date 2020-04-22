@@ -25,20 +25,13 @@ class CategoriesEnjeuInterne
      */
     private $NomCategories;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Enjeu", mappedBy="CategoriesEnjeu")
-     */
-    private $enjeus;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TypeEnjeu", inversedBy="categoriesEnjeuInternes")
      */
     private $TypeEnjeu;
 
-    public function __construct()
-    {
-        $this->enjeus = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -57,36 +50,6 @@ class CategoriesEnjeuInterne
         return $this;
     }
 
-    /**
-     * @return Collection|Enjeu[]
-     */
-    public function getEnjeus(): Collection
-    {
-        return $this->enjeus;
-    }
-
-    public function addEnjeus(Enjeu $enjeus): self
-    {
-        if (!$this->enjeus->contains($enjeus)) {
-            $this->enjeus[] = $enjeus;
-            $enjeus->setCategoriesEnjeu($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnjeus(Enjeu $enjeus): self
-    {
-        if ($this->enjeus->contains($enjeus)) {
-            $this->enjeus->removeElement($enjeus);
-            // set the owning side to null (unless already changed)
-            if ($enjeus->getCategoriesEnjeu() === $this) {
-                $enjeus->setCategoriesEnjeu(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getTypeEnjeu(): ?TypeEnjeu
     {

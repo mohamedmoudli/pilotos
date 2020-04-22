@@ -25,10 +25,6 @@ class TypeEnjeu
      */
     private $NomType;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Enjeu", mappedBy="typeEnjeu")
-     */
-    private $enjeus;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\CategoriesEnjeuInterne", mappedBy="TypeEnjeu")
@@ -37,7 +33,6 @@ class TypeEnjeu
 
     public function __construct()
     {
-        $this->enjeus = new ArrayCollection();
         $this->categoriesEnjeuInternes = new ArrayCollection();
     }
 
@@ -58,36 +53,7 @@ class TypeEnjeu
         return $this;
     }
 
-    /**
-     * @return Collection|Enjeu[]
-     */
-    public function getEnjeus(): Collection
-    {
-        return $this->enjeus;
-    }
 
-    public function addEnjeus(Enjeu $enjeus): self
-    {
-        if (!$this->enjeus->contains($enjeus)) {
-            $this->enjeus[] = $enjeus;
-            $enjeus->setTypeEnjeu($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnjeus(Enjeu $enjeus): self
-    {
-        if ($this->enjeus->contains($enjeus)) {
-            $this->enjeus->removeElement($enjeus);
-            // set the owning side to null (unless already changed)
-            if ($enjeus->getTypeEnjeu() === $this) {
-                $enjeus->setTypeEnjeu(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|CategoriesEnjeuInterne[]

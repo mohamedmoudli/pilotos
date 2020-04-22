@@ -126,6 +126,11 @@ class PlanDeAction
      */
     private $objective;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\HistoriqueObjective", inversedBy="NumAction")
+     */
+    private $historiqueObjective;
+
 
     public function getId(): ?int
     {
@@ -386,6 +391,18 @@ class PlanDeAction
     public function setOrigine($Origine): void
     {
         $this->Origine = $Origine;
+    }
+
+    public function getHistoriqueObjective(): ?HistoriqueObjective
+    {
+        return $this->historiqueObjective;
+    }
+
+    public function setHistoriqueObjective(?HistoriqueObjective $historiqueObjective): self
+    {
+        $this->historiqueObjective = $historiqueObjective;
+
+        return $this;
     }
 
 

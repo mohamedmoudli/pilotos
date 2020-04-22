@@ -36,12 +36,6 @@ class Processus
     private $Pilote;
 
 
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Objective", mappedBy="ProcessLi")
-     */
-    private $objectives;
-
     public function __construct()
     {
 
@@ -91,40 +85,5 @@ class Processus
 
         return $this;
     }
-
-
-
-    /**
-     * @return Collection|Objective[]
-     */
-    public function getObjectives(): Collection
-    {
-        return $this->objectives;
-    }
-
-    public function addObjective(Objective $objective): self
-    {
-        if (!$this->objectives->contains($objective)) {
-            $this->objectives[] = $objective;
-            $objective->setProcessLi($this);
-        }
-
-        return $this;
-    }
-
-    public function removeObjective(Objective $objective): self
-    {
-        if ($this->objectives->contains($objective)) {
-            $this->objectives->removeElement($objective);
-            // set the owning side to null (unless already changed)
-            if ($objective->getProcessLi() === $this) {
-                $objective->setProcessLi(null);
-            }
-        }
-
-        return $this;
-    }
-
-
 
 }

@@ -25,16 +25,6 @@ class CategoriesEnjeuExterne
      */
     private $NomCategorie;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Enjeu", mappedBy="categoriesEnjeuExterne")
-     */
-    private $enjeus;
-
-    public function __construct()
-    {
-        $this->enjeus = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -52,34 +42,5 @@ class CategoriesEnjeuExterne
         return $this;
     }
 
-    /**
-     * @return Collection|Enjeu[]
-     */
-    public function getEnjeus(): Collection
-    {
-        return $this->enjeus;
-    }
 
-    public function addEnjeus(Enjeu $enjeus): self
-    {
-        if (!$this->enjeus->contains($enjeus)) {
-            $this->enjeus[] = $enjeus;
-            $enjeus->setCategoriesEnjeuExterne($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnjeus(Enjeu $enjeus): self
-    {
-        if ($this->enjeus->contains($enjeus)) {
-            $this->enjeus->removeElement($enjeus);
-            // set the owning side to null (unless already changed)
-            if ($enjeus->getCategoriesEnjeuExterne() === $this) {
-                $enjeus->setCategoriesEnjeuExterne(null);
-            }
-        }
-
-        return $this;
-    }
 }

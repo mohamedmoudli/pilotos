@@ -127,9 +127,9 @@ class OpportuniteController extends AbstractController
             if($poids >= 9 ){
                 $opportunite->setDecisionReevaluation('opportunité interssésante a saisir');
             }
-            $idStrategique = $request->get('idstrategique');
-            $idprocess = $request->get('idprocess');
-            $idcategorie = $request->get('idcategorie');
+            $idStrategique = $request->get('idstrategiqueReevaluation');
+            $idprocess = $request->get('idprocessReevaluation');
+            $idcategorie = $request->get('idcategorieReevaluation');
 
             $res = intval($idStrategique);
 
@@ -137,12 +137,12 @@ class OpportuniteController extends AbstractController
 
             $res2 = intval($idcategorie);
             $strategiqueOpportunite = $em->getRepository(StrategiqueOpportunite::class)->findOneById($res);
-            $strategiqueOpportunite = new StrategiqueOpportunite();
+
 
             $opportunite->setStrategiqueEvaluation($strategiqueOpportunite);
 
             $processOpportunite = $em->getRepository(Processus::class)->findOneById($res1);
-            $processOpportunite = new Processus();
+
             $opportunite->setProcessLieReevaluation($processOpportunite );
 
             $opportunite->setEtatOpportuniteReevaluation($request->request->get('EtatOpportuniteReevaluation'));
@@ -182,8 +182,13 @@ class OpportuniteController extends AbstractController
 
                 $numActions = new PlanDeAction();
                 $numActions = $pipertinanteObj->getNumAction();
+                $numActionsreevaluation = new PlanDeAction();
+                $numActionsreevaluation  = $pipertinanteObj->getNumActionReevaluation();
                 foreach ($numActions as  $numAction ){
                     $historique->addNumeroAction($numAction);
+                }
+                foreach ($numActionsreevaluation as  $numActionreevaluation ){
+                    $historique->addNumeroAction($numActionreevaluation);
                 }
 
 
@@ -230,7 +235,7 @@ class OpportuniteController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $historiqueOpportunite = $entityManager->getRepository(HistoriqueOpportunite::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Etat' , 'Commentaire'  ,
+        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Etat' , 'Commentaire'  ,'Date' ,
              'NumeroAction'=> ['id' , 'Origine']]]);
         return new JsonResponse($response);
     }
