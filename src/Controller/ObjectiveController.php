@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\CategorieOpportunite;
 use App\Entity\Enjeu;
 use App\Entity\HistoriqueObjective;
 use App\Entity\HistoriqueOpportunite;
@@ -14,16 +15,78 @@ use App\Entity\Partieinteresse;
 use App\Entity\PlanDeAction;
 use App\Entity\Processus;
 use App\Entity\Risque;
+use App\Entity\StrategiqueOpportunite;
 use App\Entity\StrategiqueRisque;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class ObjectiveController extends AbstractController
 {
+
+
+
+    /**
+     * @Route("/CreateObjective", name="CreateObjective")
+     */
+    public function createObjective(Request $request): Response
+    {
+        // success
+
+        if ($request->isMethod('POST')) {
+            $em = $this->getDoctrine()->getManager();
+            $objective = new Objective();
+
+            $idEnjeu = $request->get('idEnjeu');
+            $idprocess = $request->get('idprocess');
+
+
+            $res = intval($idEnjeu);
+
+            $res1 = intval($idprocess);
+            $objective->setDescription($request->request->get('Description'));
+            $objective->setTemps1($request->request->get('Temps1'));
+            $objective->setTemps2($request->request->get('Temps2'));
+            $objective->setTemps3($request->request->get('Temps3'));
+            $objective->setTemps4($request->request->get('Temps4'));
+            $objective->setTemps2020($request->request->get('Temps2020'));
+            $objective->setTemps2021($request->request->get('Temps2021'));
+            $indicateur = $request->request->get('IndicateurPredefini');
+            $objective->setIndicateurPredefini($indicateur);
+            if($indicateur){
+                $processus = new Processus();
+                $processus = $em->getRepository(Processus::class)->findOneById($res1);
+                $objective->setIndicateurPerformance($processus->getIndicateurPerformance());
+            }else{
+                $objective->setIndicateurPerformance($request->request->get('IndicateurPerformance'));
+            }
+
+            $objective->setObjectiveAAtendre($request->request->get('ObjectiveAAtendre'));
+            $objective->setEtatInitial($request->request->get('EtatInitial'));
+            $objective->setEtatActuel($request->request->get('EtatActuel'));
+            $objective->setEtatActuelIndiacteur($request->request->get('EtatActuelIndiacteur'));
+            $objective->setCommentaire($request->request->get('Commentaire'));
+
+            $enjeu = $em->getRepository(Enjeu::class)->findOneById($res);
+
+
+            $objective->setEnjeu($enjeu);
+            $processRisque = $em->getRepository(Processus::class)->findOneById($res1);
+            $objective->setProcessLie($processRisque);
+
+            $em->persist($objective);
+
+            $em->flush();
+            return new JsonResponse('success');
+        }
+
+        return new JsonResponse('error1');
+    }
+
 
 
     /**
@@ -137,6 +200,9 @@ class ObjectiveController extends AbstractController
      * @Route("/GetObjectiveByAction", name="GetObjectiveByAction")
      * methods={"GET"}
      */
+
+
+
     public function GetOpportuniteByAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();

@@ -39,6 +39,36 @@ class RisqueRepository extends ServiceEntityRepository
         ");
         return $query->execute();
     }
+
+    public function getNbreEtatRisque(){
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\Partieinteresse p left outer JOIN App\Entity\Categoriepi c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NomEtatRisque as Nom')
+            ->addSelect('count(p.EtatRisque) as nbre')
+            ->from('App\Entity\EtatRisque', 'c')
+            ->leftjoin('App\Entity\Risque', 'p', 'with', 'c.id = p.EtatRisque')
+            ->groupBy('c.id')
+            ->getQuery()->getArrayResult();
+        return $query;
+    }
+
+    public function getNbreCategorieRisque(){
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\Partieinteresse p left outer JOIN App\Entity\Categoriepi c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NomCategorie as Nom')
+            ->addSelect('count(p.CategorieRisque) as nbre')
+            ->from('App\Entity\CategorieRisque', 'c')
+            ->leftjoin('App\Entity\Risque', 'p', 'with', 'c.id = p.CategorieRisque')
+            ->groupBy('c.id')
+            ->getQuery()->getArrayResult();
+        return $query;
+    }
     // /**
     //  * @return CategoriesRisque[] Returns an array of CategoriesRisque objects
     //  */

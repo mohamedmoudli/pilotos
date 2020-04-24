@@ -113,10 +113,7 @@ class Opportunite
      */
     private $CategorieOpportunite;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $EtatOpportunite;
+
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -148,10 +145,7 @@ class Opportunite
      */
     private $ProcessLieReevaluation;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $EtatOpportuniteReevaluation;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -167,6 +161,18 @@ class Opportunite
      * @ORM\OneToMany(targetEntity="App\Entity\PlanDeAction", mappedBy="opportuniteReevalution")
      */
     private $NumActionReevaluation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\EtatOpportunite", inversedBy="opportunites")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Etatopportunite;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\EtatOpportunite", inversedBy="opportunites")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $EtatopportuniteReevaluation;
 
     public function __construct()
     {
@@ -395,17 +401,6 @@ class Opportunite
         return $this;
     }
 
-    public function getEtatOpportunite(): ?string
-    {
-        return $this->EtatOpportunite;
-    }
-
-    public function setEtatOpportunite(string $EtatOpportunite): self
-    {
-        $this->EtatOpportunite = $EtatOpportunite;
-
-        return $this;
-    }
 
     public function getEffortReevaluation(): ?int
     {
@@ -479,17 +474,6 @@ class Opportunite
         return $this;
     }
 
-    public function getEtatOpportuniteReevaluation(): ?string
-    {
-        return $this->EtatOpportuniteReevaluation;
-    }
-
-    public function setEtatOpportuniteReevaluation(?string $EtatOpportuniteReevaluation): self
-    {
-        $this->EtatOpportuniteReevaluation = $EtatOpportuniteReevaluation;
-
-        return $this;
-    }
 
     public function getCommentaire(): ?string
     {
@@ -561,6 +545,30 @@ class Opportunite
                 $numActionReevaluation->setOpportuniteReevalution(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtatopportunite(): ?EtatOpportunite
+    {
+        return $this->Etatopportunite;
+    }
+
+    public function setEtatopportunite(?EtatOpportunite $Etatopportunite): self
+    {
+        $this->Etatopportunite = $Etatopportunite;
+
+        return $this;
+    }
+
+    public function getEtatopportuniteReevaluation(): ?EtatOpportunite
+    {
+        return $this->EtatopportuniteReevaluation;
+    }
+
+    public function setEtatopportuniteReevaluation(?EtatOpportunite $EtatopportuniteReevaluation): self
+    {
+        $this->EtatopportuniteReevaluation = $EtatopportuniteReevaluation;
 
         return $this;
     }

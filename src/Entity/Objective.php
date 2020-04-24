@@ -56,7 +56,7 @@ class Objective
     private $Temps2021;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , nullable=true)
      */
     private $IndicateurPredefini;
 

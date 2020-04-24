@@ -82,10 +82,7 @@ class Risque
 
 
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $EtatRisque;
+
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -115,6 +112,12 @@ class Risque
      * @ORM\OneToMany(targetEntity="App\Entity\PlanDeAction", mappedBy="Risque")
      */
     private $planDeActions;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\EtatRisque", inversedBy="risques")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $EtatRisque;
 
     public function __construct()
     {
@@ -274,18 +277,6 @@ class Risque
 
 
 
-    public function getEtatRisque(): ?string
-    {
-        return $this->EtatRisque;
-    }
-
-    public function setEtatRisque(string $EtatRisque): self
-    {
-        $this->EtatRisque = $EtatRisque;
-
-        return $this;
-    }
-
     public function getCommentaire(): ?string
     {
         return $this->Commentaire;
@@ -362,6 +353,18 @@ class Risque
                 $planDeAction->setRisque(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtatRisque(): ?EtatRisque
+    {
+        return $this->EtatRisque;
+    }
+
+    public function setEtatRisque(?EtatRisque $EtatRisque): self
+    {
+        $this->EtatRisque = $EtatRisque;
 
         return $this;
     }

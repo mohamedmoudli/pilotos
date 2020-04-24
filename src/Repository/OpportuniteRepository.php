@@ -19,6 +19,38 @@ class OpportuniteRepository extends ServiceEntityRepository
         parent::__construct($registry, Opportunite::class);
     }
 
+
+
+    public function getNbreEtatOpportunite(){
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\Partieinteresse p left outer JOIN App\Entity\Categoriepi c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NomEtatOpportunite as Nom')
+            ->addSelect('count(p.Etatopportunite) as nbre')
+            ->from('App\Entity\EtatOpportunite', 'c')
+            ->leftjoin('App\Entity\Opportunite', 'p', 'with', 'c.id = p.Etatopportunite')
+            ->groupBy('c.id')
+            ->getQuery()->getArrayResult();
+        return $query;
+    }
+
+    public function getNbreCategorieOpportunite(){
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\Partieinteresse p left outer JOIN App\Entity\Categoriepi c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NomCategorie as Nom')
+            ->addSelect('count(p.CategorieOpportunite) as nbre')
+            ->from('App\Entity\CategorieOpportunite', 'c')
+            ->leftjoin('App\Entity\Opportunite', 'p', 'with', 'c.id = p.CategorieOpportunite')
+            ->groupBy('c.id')
+            ->getQuery()->getArrayResult();
+        return $query;
+    }
+
     // /**
     //  * @return Opportunite[] Returns an array of Opportunite objects
     //  */

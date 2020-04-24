@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\CategorieRisque;
 use App\Entity\CategoriesEnjeuInterne;
+use App\Entity\EtatOpportunite;
+use App\Entity\EtatRisque;
 use App\Entity\Exigencepi;
 use App\Entity\HistoriquePI;
 use App\Entity\HistoriqueRisque;
@@ -66,6 +68,7 @@ class RisqueControlleur extends AbstractController
             $idStrategique = $request->get('idstrategique');
             $idprocess = $request->get('idprocess');
             $idcategorie = $request->get('idcategorie');
+            $idEtatRisque = $request->get('idEtatRisque');
             dump($idStrategique);
             $res = intval($idStrategique);
             dump($res);
@@ -80,7 +83,8 @@ class RisqueControlleur extends AbstractController
             $risque->setProcessus($processRisque);
             $CategorieRisque = $em->getRepository(CategorieRisque::class)->findOneById($res2);
             $risque->setCategorieRisque($CategorieRisque);
-            $risque->setEtatRisque($request->request->get('EtatRisque'));
+            $etatRisque = $em->getRepository(EtatRisque::class)->findOneById($idEtatRisque);
+            $risque->setEtatRisque($etatRisque);
             $risque->setCommentaire($request->request->get('Commentaire'));
 
 
@@ -115,6 +119,8 @@ class RisqueControlleur extends AbstractController
                 $strategique = $pipertinanteObj->getStrategiqueRisque();
                 $processlie = new Processus();
                 $processlie = $pipertinanteObj->getProcessus();
+                $EtatRisque = new EtatRisque();
+                $EtatRisque = $pipertinanteObj->getEtatRisque();
                 $numActions = new PlanDeAction();
                 $numActions = $pipertinanteObj->getPlanDeActions();
                 foreach ($numActions as  $numAction ){
@@ -133,7 +139,7 @@ class RisqueControlleur extends AbstractController
 
 
                 $historique->setStrategique($strategique->getNomSrategique());
-                $historique->setEtatRisque($pipertinanteObj->getEtatRisque());
+                $historique->setEtatRisque($EtatRisque->getNomEtatRisque());
                 $historique->setProcesslie($processlie->getProcessus());
 
                 $historique->setCommentaires($pipertinanteObj->getCommentaire());
@@ -189,6 +195,35 @@ class RisqueControlleur extends AbstractController
         $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Criticite' , 'Decision' , 'EtatRisque' ,
             'Commentaires' ,  'Processlie'  , 'Strategique' ,'DateENregistrement' , 'NumeroAction'=> ['id' , 'Origine']]]);
         return new JsonResponse($response);
+    }
+
+
+
+    /**
+     * @Route("/GetNbreEtatRisque", name="GetNbreEtatRisque")
+     * methods={"GET"}
+     */
+    public function GetNbreEtatRisque(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $categoriesrisque = $entityManager->getRepository(Risque::class)->getNbreEtatRisque();
+        dump($categoriesrisque);
+
+        return new JsonResponse($categoriesrisque);
+    }
+
+
+    /**
+     * @Route("/GetNbreCategorieRisque", name="GetNbreEtatRisque")
+     * methods={"GET"}
+     */
+    public function GetNbreCategorieRisque(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $categoriesrisque = $entityManager->getRepository(Risque::class)->getNbreCategorieRisque();
+        dump($categoriesrisque);
+
+        return new JsonResponse($categoriesrisque);
     }
 
 }
