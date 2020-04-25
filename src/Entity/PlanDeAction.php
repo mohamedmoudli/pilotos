@@ -23,6 +23,10 @@ class PlanDeAction
      */
     private $Origine;
 
+    /**
+     * @ORM\Column(type="string", length=255 , nullable=true)
+     */
+    private $Description;
 
     /**
      * @ORM\Column(type="integer")
@@ -58,6 +62,10 @@ class PlanDeAction
      * @ORM\Column(type="string", length=255)
      */
     private $Avencement;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Commentaire;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -128,6 +136,7 @@ class PlanDeAction
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\HistoriqueObjective", inversedBy="NumAction")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $historiqueObjective;
 
@@ -403,6 +412,38 @@ class PlanDeAction
         $this->historiqueObjective = $historiqueObjective;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommentaire()
+    {
+        return $this->Commentaire;
+    }
+
+    /**
+     * @param mixed $Commentaire
+     */
+    public function setCommentaire($Commentaire): void
+    {
+        $this->Commentaire = $Commentaire;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->Description;
+    }
+
+    /**
+     * @param mixed $Description
+     */
+    public function setDescription($Description): void
+    {
+        $this->Description = $Description;
     }
 
 
