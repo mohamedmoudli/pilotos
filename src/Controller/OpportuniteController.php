@@ -256,7 +256,7 @@ class OpportuniteController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(Opportunite::class)->getNbreEtatOpportunite();
-        dump($categoriesrisque);
+
 
         return new JsonResponse($categoriesrisque);
     }
@@ -270,7 +270,7 @@ class OpportuniteController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(Opportunite::class)->getNbreCategorieOpportunite();
-        dump($categoriesrisque);
+
 
         return new JsonResponse($categoriesrisque);
     }

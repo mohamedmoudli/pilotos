@@ -207,21 +207,21 @@ class RisqueControlleur extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(Risque::class)->getNbreEtatRisque();
-        dump($categoriesrisque);
+
 
         return new JsonResponse($categoriesrisque);
     }
 
 
     /**
-     * @Route("/GetNbreCategorieRisque", name="GetNbreEtatRisque")
+     * @Route("/GetNbreCategorieRisque", name="GetNbreCategorieRisque")
      * methods={"GET"}
      */
     public function GetNbreCategorieRisque(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(Risque::class)->getNbreCategorieRisque();
-        dump($categoriesrisque);
+
 
         return new JsonResponse($categoriesrisque);
     }

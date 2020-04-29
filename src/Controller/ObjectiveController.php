@@ -225,7 +225,7 @@ class ObjectiveController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $historiqueOpportunite = $entityManager->getRepository(HistoriqueObjective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Description' ,
+        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Description' , 'Date' ,
             'Temps1'  ,'Temps2' ,'Temps3' , 'Temps4' , 'Temps2020' , 'Temps2021' , 'IndicateurPredefini','IndicateurPerformance',
             'ObjectiveAttendre','EtatInitial','EtatActuelIndicateur','Avencement','EtatActuel','Commentaire','Enjeux' ,'Processlie',
             'NumAction'=> ['id' , 'Origine']]]);

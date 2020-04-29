@@ -90,7 +90,7 @@ class PlanDeActionController extends AbstractController
             }
             $opportunitereevaluation = $em->getRepository(Opportunite::class)->findOneById($idOpportunitereevaluation);
             if($opportunitereevaluation){
-                $plandeaction->setOpportuniteReevalution($Risque);
+                $plandeaction->setOpportuniteReevalution($opportunitereevaluation);
                 $plandeaction->setDescription($opportunitereevaluation->getDescription());
             }
             $objective = $em->getRepository(Objective::class)->findOneById($idobjective);
