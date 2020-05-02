@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\ActionPlan;
+use App\Entity\Process;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method ActionPlan|null find($id, $lockMode = null, $lockVersion = null)
- * @method ActionPlan|null findOneBy(array $criteria, array $orderBy = null)
- * @method ActionPlan[]    findAll()
- * @method ActionPlan[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Process|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Process|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Process[]    findAll()
+ * @method Process[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PlanDeActionRepository extends ServiceEntityRepository
+class ProcessRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ActionPlan::class);
+        parent::__construct($registry, Process::class);
     }
 
     // /**
-    //  * @return ActionPlan[] Returns an array of ActionPlan objects
+    //  * @return Process[] Returns an array of Process objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class PlanDeActionRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?ActionPlan
+    public function findOneBySomeField($value): ?Process
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

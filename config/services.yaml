@@ -4,8 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    oauth2_client_id: 1_64mwfcv15604o00s0o8w444o84w4g848o0ckwok00kggc44skg
-    oauth2_client_secret: 584ixy6qpyo8c8woogs4k8wg0o0s80s4ow0sgco4woos8o0o4o
+    oauth2_client_id: 1_3snexlkrwse8os88k8w48ooc8k8wgs40swkso8gwcokogg8048
+    oauth2_client_secret: 12p1w1ch3r5wgkw8gogk4k8ccckgss0s44gcokgkk04ssk0s08
     token_lifetime: 345600
     front_url: 127.0.0.1:4200
     mailer_test_address: mohamedmouldi95@gmail.com

@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\TypeEnjeu;
+use App\Entity\TypeStake;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method TypeEnjeu|null find($id, $lockMode = null, $lockVersion = null)
- * @method TypeEnjeu|null findOneBy(array $criteria, array $orderBy = null)
- * @method TypeEnjeu[]    findAll()
- * @method TypeEnjeu[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TypeStake|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TypeStake|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TypeStake[]    findAll()
+ * @method TypeStake[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TypeEnjeuRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TypeEnjeu::class);
+        parent::__construct($registry, TypeStake::class);
     }
 
     // /**
-    //  * @return TypeEnjeu[] Returns an array of TypeEnjeu objects
+    //  * @return TypeStake[] Returns an array of TypeStake objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class TypeEnjeuRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TypeEnjeu
+    public function findOneBySomeField($value): ?TypeStake
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

@@ -4,19 +4,19 @@
 namespace App\Controller;
 
 
-use App\Entity\CategorieOpportunite;
-use App\Entity\Enjeu;
-use App\Entity\HistoriqueObjective;
-use App\Entity\HistoriqueOpportunite;
-use App\Entity\HistoriqueRisque;
+use App\Entity\CategoryOpportunity;
+use App\Entity\Stake;
+use App\Entity\historicalObjective;
+use App\Entity\HistoricalOpportunity;
+use App\Entity\HistoricalRisk;
 use App\Entity\Objective;
-use App\Entity\Opportunite;
-use App\Entity\Partieinteresse;
-use App\Entity\PlanDeAction;
-use App\Entity\Processus;
-use App\Entity\Risque;
-use App\Entity\StrategiqueOpportunite;
-use App\Entity\StrategiqueRisque;
+use App\Entity\Opportunity;
+use App\Entity\IntersetedParty;
+use App\Entity\ActionPlan;
+use App\Entity\Process;
+use App\Entity\Risk;
+use App\Entity\StrategicOpportunity;
+use App\Entity\StrategicRisk;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,7 @@ class ObjectiveController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $objective = new Objective();
 
-            $idEnjeu = $request->get('idEnjeu');
+            $idEnjeu = $request->get('idStake');
             $idprocess = $request->get('idprocess');
 
 
@@ -49,33 +49,33 @@ class ObjectiveController extends AbstractController
 
             $res1 = intval($idprocess);
             $objective->setDescription($request->request->get('Description'));
-            $objective->setTemps1($request->request->get('Temps1'));
-            $objective->setTemps2($request->request->get('Temps2'));
-            $objective->setTemps3($request->request->get('Temps3'));
-            $objective->setTemps4($request->request->get('Temps4'));
-            $objective->setTemps2020($request->request->get('Temps2020'));
-            $objective->setTemps2021($request->request->get('Temps2021'));
-            $indicateur = $request->request->get('IndicateurPredefini');
-            $objective->setIndicateurPredefini($indicateur);
+            $objective->setTime1($request->request->get('Time1'));
+            $objective->setTime2($request->request->get('Time2'));
+            $objective->setTime3($request->request->get('Time3'));
+            $objective->setTime4($request->request->get('Time4'));
+            $objective->setTime2020($request->request->get('Time2020'));
+            $objective->setTime2021($request->request->get('Time2021'));
+            $indicateur = $request->request->get('PredefinedIndicator');
+            $objective->setPredefinedIndicator($indicateur);
             if($indicateur){
-                $processus = new Processus();
-                $processus = $em->getRepository(Processus::class)->findOneById($res1);
-                $objective->setIndicateurPerformance($processus->getIndicateurPerformance());
+                $processus = new Process();
+                $processus = $em->getRepository(Process::class)->findOneById($res1);
+                $objective->setPerformanceIndicator($processus->getPerformanceIndicator());
             }else{
-                $objective->setIndicateurPerformance($request->request->get('IndicateurPerformance'));
+                $objective->setPerformanceIndicator($request->request->get('PerformanceIndicator'));
             }
 
-            $objective->setObjectiveAAtendre($request->request->get('ObjectiveAAtendre'));
-            $objective->setEtatInitial($request->request->get('EtatInitial'));
-            $objective->setEtatActuel($request->request->get('EtatActuel'));
-            $objective->setEtatActuelIndiacteur($request->request->get('EtatActuelIndiacteur'));
-            $objective->setCommentaire($request->request->get('Commentaire'));
+            $objective->setObjectiveToWait($request->request->get('ObjectiveToWait'));
+            $objective->setInitialState($request->request->get('InitialState'));
+            $objective->setCurrentState($request->request->get('CurrentState'));
+            $objective->setCurrentStateIndiactor($request->request->get('CurrentStateIndiactor'));
+            $objective->setComment($request->request->get('Comment'));
 
-            $enjeu = $em->getRepository(Enjeu::class)->findOneById($res);
+            $stake = $em->getRepository(Stake::class)->findOneById($res);
 
 
-            $objective->setEnjeu($enjeu);
-            $processRisque = $em->getRepository(Processus::class)->findOneById($res1);
+            $objective->setStake($stake);
+            $processRisque = $em->getRepository(Process::class)->findOneById($res1);
             $objective->setProcessLie($processRisque);
 
             $em->persist($objective);
@@ -93,7 +93,7 @@ class ObjectiveController extends AbstractController
      * @Route("/saveAvencementObjective", name="saveAvencementObjective")
      * methods={"GET"}
      */
-    public function savehistoriqueRisque(Request $request )
+    public function saveAvencementObjective(Request $request )
     {
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -103,7 +103,7 @@ class ObjectiveController extends AbstractController
         $response = $serializer->normalize($pipertinantes, 'json', ["attributes" => ['id' ,  'NumAction'=> ['id' , 'Origine']]]);
 
         if(count($response)){
-            /** @var Partieinteresse $pipertinante */
+            /** @var IntersetedParty $pipertinante */
             foreach ($response as  $pipertinante ){;
                 $pipertinanteObj = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
 
@@ -113,13 +113,12 @@ class ObjectiveController extends AbstractController
                 $count =0;
                 foreach ($numActions as  $numAction ){
                     $count =$count + 1;
-                    $somme = $somme + $numAction->getAction();
+                    $somme = $somme + $numAction->getAdvancement();
 
                 }
-                dump($somme);
-                dump($count);
+
                 if($count){
-                    $pipertinanteObj->setAvencement($somme/$count);
+                    $pipertinanteObj->setAdvancement($somme/$count);
                 }
 
 
@@ -136,7 +135,7 @@ class ObjectiveController extends AbstractController
 
 
     /**
-     * @Route("/savehistoriqueObjective", name="savehistoriqueObjective")
+     * @Route("/savehistoricalObjective", name="savehistoricalObjective")
      * methods={"GET"}
      */
     public function savehistoriqueObjective(Request $request )
@@ -146,44 +145,46 @@ class ObjectiveController extends AbstractController
 
         $pipertinantes = $entityManager->getRepository(Objective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($pipertinantes, 'json', ["attributes" => ['id' ,'Description' ,'CourtTerm' , 'MoyenTerm' ,'LongTerm' , 'Causes' , 'Censequence' ,'Gravite' , 'Probabilite' , 'detectabilite' , 'Criticite' , 'Decision' , 'EtatRisque' , 'Commentaire' , 'Processus'  , 'StrategiqueRisque' , 'planDeActions'=> ['id' , 'Origine']]]);
+        $response = $serializer->normalize($pipertinantes, 'json', ["attributes" => ['id' ,'Description' ,'Time1' , 'Time2' ,'Time3' , 'Time4' , 'Time2020' ,'Time2021' ,
+            'ProcessLie' , 'PredefinedIndicator' , 'PerformanceIndicator' , 'ObjectiveToWait', 'InitialState' , 'CurrentStateIndiactor' ,
+            'Advancement', 'Commentaire' , 'CurrentState' , 'planDeActions'=> ['id' , 'Origine']]]);
 
         if(count($response)){
-            /** @var Partieinteresse $pipertinante */
+            /** @var IntersetedParty $pipertinante */
             foreach ($response as  $pipertinante ){
-                $historique = new HistoriqueObjective();
+                $historique = new historicalObjective();
                 $pipertinanteObj = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
-                $enjeu = new Enjeu();
-                $enjeu = $pipertinanteObj->getEnjeu();
-                $processlie = new Processus();
+                $enjeu = new Stake();
+                $enjeu = $pipertinanteObj->getStake();
+                $processlie = new Process();
                 $processlie = $pipertinanteObj->getProcessLie();
-                $numActions = new PlanDeAction();
+                $numActions = new ActionPlan();
                 $numActions = $pipertinanteObj->getNumAction();
                 foreach ($numActions as  $numAction ){
                     $historique->addNumAction($numAction);
                 }
 
                 $historique->setDescription($pipertinanteObj->getDescription());
-                $historique->setTemps1($pipertinanteObj->getTemps1());
-                $historique->setTemps2($pipertinanteObj->getTemps2());
-                $historique->setTemps3($pipertinanteObj->getTemps3());
-                $historique->setTemps4($pipertinanteObj->getTemps4());
-                $historique->setTemps2020($pipertinanteObj->getTemps2020());
-                $historique->setTemps2021($pipertinanteObj->getTemps2021());
-                $historique->setIndicateurPredefini($pipertinanteObj->getIndicateurPredefini());
-                $historique->setIndicateurPerformance($pipertinanteObj->getIndicateurPerformance());
-                $historique->setObjectiveAttendre($pipertinanteObj->getObjectiveAAtendre());
-                $historique->setEtatInitial($pipertinanteObj->getEtatInitial());
-                $historique->setEtatActuelIndicateur($pipertinanteObj->getEtatActuelIndiacteur());
-                $historique->setAvencement($pipertinanteObj->getAvencement());
-                $historique->setEtatActuel($pipertinanteObj->getEtatActuel());
-                $historique->setCommentaire($pipertinanteObj->getCommentaire());
+                $historique->setTime1($pipertinanteObj->getTime1());
+                $historique->setTime2($pipertinanteObj->getTime2());
+                $historique->setTime3($pipertinanteObj->getTime3());
+                $historique->setTime4($pipertinanteObj->getTime4());
+                $historique->setTime2020($pipertinanteObj->getTime2020());
+                $historique->setTime2021($pipertinanteObj->getTime2021());
+                $historique->setPredefinedIndicator($pipertinanteObj->getPredefinedIndicator());
+                $historique->setPerformanceIndicator($pipertinanteObj->getPerformanceIndicator());
+                $historique->setObjectiveToWait($pipertinanteObj->getObjectiveToWait());
+                $historique->setInitialState($pipertinanteObj->getInitialState());
+                $historique->setCurrentStateIndicator($pipertinanteObj->getCurrentStateIndiactor());
+                $historique->setAdvancement($pipertinanteObj->getAdvancement());
+                $historique->setCurrentState($pipertinanteObj->getCurrentState());
+                $historique->setComment($pipertinanteObj->getComment());
 
 
 
 
-                $historique->setEnjeux($enjeu->getDescription());
-                $historique->setProcesslie($processlie->getProcessus());
+                $historique->setStake($enjeu->getDescription());
+                $historique->setProcesslie($processlie->getProcess());
 
                 $historique->setDate(new \DateTime());
                 $entityManager->persist($historique);
@@ -203,32 +204,32 @@ class ObjectiveController extends AbstractController
 
 
 
-    public function GetOpportuniteByAction(Request $request)
+    public function GetObjectiveByAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(Objective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Description' , 'Enjeu' , 'Temps1' , 'Temps2' , 'Temps3' , 'Temps4' ,
-            'Temps2020' , 'Temps2021' , 'ProcessLie' , 'IndicateurPredefini' , 'IndicateurPerformance' , 'ObjectiveAAtendre' ,
-            'EtatInitial' ,  'NumAction'=> ['id' , 'Origine'] , 'EtatActuelIndiacteur' , 'Avencement' , 'EtatActuel' ,
-            'Commentaire']]);
+        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Description' , 'Stake' , 'Time1' , 'Time2' , 'Time3' , 'Time4' ,
+            'Time2020' , 'Time2021' , 'ProcessLie' , 'PredefinedIndicator' , 'PerformanceIndicator' , 'ObjectiveToWait' ,
+            'InitialState' ,  'NumAction'=> ['id' , 'Origine'] , 'CurrentStateIndicator'  , 'Advancement' , 'CurrentState' ,
+            'Comment']]);
         return new JsonResponse($response);
     }
 
 
     /**
-     * @Route("/GethistoriqueObjective", name="GethistoriqueObjective")
+     * @Route("/GethistoricalObjective", name="GethistoricalObjective")
      * methods={"GET"}
      */
     public function GethistoriqueObjective(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $historiqueOpportunite = $entityManager->getRepository(HistoriqueObjective::class)->findAll();
+        $historiqueOpportunite = $entityManager->getRepository(historicalObjective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Description' , 'Date' ,
-            'Temps1'  ,'Temps2' ,'Temps3' , 'Temps4' , 'Temps2020' , 'Temps2021' , 'IndicateurPredefini','IndicateurPerformance',
-            'ObjectiveAttendre','EtatInitial','EtatActuelIndicateur','Avencement','EtatActuel','Commentaire','Enjeux' ,'Processlie',
-            'NumAction'=> ['id' , 'Origine']]]);
+        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,   'Description' , 'Stake' , 'Time1' , 'Time2' , 'Time3' , 'Time4' ,
+            'Time2020' , 'Time2021' , 'ProcessLie' , 'PredefinedIndicator' , 'PerformanceIndicator' , 'ObjectiveToWait' ,
+            'InitialState' ,  'NumAction'=> ['id' , 'Origin'] , 'CurrentStateIndicator' , 'Advancement' , 'CurrentState' , 'Comment' , 'Date'
+            ]]);
         return new JsonResponse($response);
     }
 

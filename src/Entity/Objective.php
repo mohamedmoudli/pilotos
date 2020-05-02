@@ -28,76 +28,76 @@ class Objective
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Temps1;
+    private $Time1;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Temps2;
+    private $Time2;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Temps3;
+    private $Time3;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Temps4;
+    private $Time4;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Temps2020;
+    private $Time2020;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Temps2021;
+    private $Time2021;
 
     /**
      * @ORM\Column(type="string", length=255 , nullable=true)
      */
-    private $IndicateurPredefini;
+    private $PredefinedIndicator;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $IndicateurPerformance;
+    private $PerformanceIndicator;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $ObjectiveAAtendre;
+    private $ObjectiveToWait;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $EtatInitial;
+    private $InitialState;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $EtatActuel;
+    private $CurrentState;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $EtatActuelIndiacteur;
+    private $CurrentStateIndiactor;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Commentaire;
+    private $Comment;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Enjeu")
+     * @ORM\ManyToOne(targetEntity="Stake")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $Enjeu;
+    private $Stake;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Processus", inversedBy="objectives")
+     * @ORM\ManyToOne(targetEntity="Process", inversedBy="objectives")
      * @ORM\JoinColumn(nullable=false)
      */
     private $ProcessLie;
@@ -105,10 +105,10 @@ class Objective
     /**
      * @ORM\Column(type="float"  , nullable=true)
      */
-    private $Avencement;
+    private $Advancement;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PlanDeAction", mappedBy="objective")
+     * @ORM\OneToMany(targetEntity="ActionPlan", mappedBy="Objective")
      */
     private $NumAction;
 
@@ -134,207 +134,266 @@ class Objective
         return $this;
     }
 
-    public function getTemps1(): ?string
+    /**
+     * @return mixed
+     */
+    public function getTime1()
     {
-        return $this->Temps1;
+        return $this->Time1;
     }
 
-    public function setTemps1(string $Temps1): self
+    /**
+     * @param mixed $Time1
+     */
+    public function setTime1($Time1): void
     {
-        $this->Temps1 = $Temps1;
+        $this->Time1 = $Time1;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTime2()
+    {
+        return $this->Time2;
+    }
+
+    /**
+     * @param mixed $Time2
+     */
+    public function setTime2($Time2): void
+    {
+        $this->Time2 = $Time2;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTime3()
+    {
+        return $this->Time3;
+    }
+
+    /**
+     * @param mixed $Time3
+     */
+    public function setTime3($Time3): void
+    {
+        $this->Time3 = $Time3;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTime4()
+    {
+        return $this->Time4;
+    }
+
+    /**
+     * @param mixed $Time4
+     */
+    public function setTime4($Time4): void
+    {
+        $this->Time4 = $Time4;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTime2020()
+    {
+        return $this->Time2020;
+    }
+
+    /**
+     * @param mixed $Time2020
+     */
+    public function setTime2020($Time2020): void
+    {
+        $this->Time2020 = $Time2020;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTime2021()
+    {
+        return $this->Time2021;
+    }
+
+    /**
+     * @param mixed $Time2021
+     */
+    public function setTime2021($Time2021): void
+    {
+        $this->Time2021 = $Time2021;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPredefinedIndicator()
+    {
+        return $this->PredefinedIndicator;
+    }
+
+    /**
+     * @param mixed $PredefinedIndicator
+     */
+    public function setPredefinedIndicator($PredefinedIndicator): void
+    {
+        $this->PredefinedIndicator = $PredefinedIndicator;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPerformanceIndicator()
+    {
+        return $this->PerformanceIndicator;
+    }
+
+    /**
+     * @param mixed $PerformanceIndicator
+     */
+    public function setPerformanceIndicator($PerformanceIndicator): void
+    {
+        $this->PerformanceIndicator = $PerformanceIndicator;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObjectiveToWait()
+    {
+        return $this->ObjectiveToWait;
+    }
+
+    /**
+     * @param mixed $ObjectiveToWait
+     */
+    public function setObjectiveToWait($ObjectiveToWait): void
+    {
+        $this->ObjectiveToWait = $ObjectiveToWait;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInitialState()
+    {
+        return $this->InitialState;
+    }
+
+    /**
+     * @param mixed $InitialState
+     */
+    public function setInitialState($InitialState): void
+    {
+        $this->InitialState = $InitialState;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentState()
+    {
+        return $this->CurrentState;
+    }
+
+    /**
+     * @param mixed $CurrentState
+     */
+    public function setCurrentState($CurrentState): void
+    {
+        $this->CurrentState = $CurrentState;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentStateIndiactor()
+    {
+        return $this->CurrentStateIndiactor;
+    }
+
+    /**
+     * @param mixed $CurrentStateIndiactor
+     */
+    public function setCurrentStateIndiactor($CurrentStateIndiactor): void
+    {
+        $this->CurrentStateIndiactor = $CurrentStateIndiactor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComment()
+    {
+        return $this->Comment;
+    }
+
+    /**
+     * @param mixed $Comment
+     */
+    public function setComment($Comment): void
+    {
+        $this->Comment = $Comment;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAdvancement()
+    {
+        return $this->Advancement;
+    }
+
+    /**
+     * @param mixed $Advancement
+     */
+    public function setAdvancement($Advancement): void
+    {
+        $this->Advancement = $Advancement;
+    }
+
+
+    public function getStake(): ?Stake
+    {
+        return $this->Stake;
+    }
+
+    public function setStake(?Stake $Stake ): self
+    {
+        $this->Stake = $Stake;
 
         return $this;
     }
 
-    public function getTemps2(): ?string
-    {
-        return $this->Temps2;
-    }
-
-    public function setTemps2(string $Temps2): self
-    {
-        $this->Temps2 = $Temps2;
-
-        return $this;
-    }
-
-    public function getTemps3(): ?string
-    {
-        return $this->Temps3;
-    }
-
-    public function setTemps3(string $Temps3): self
-    {
-        $this->Temps3 = $Temps3;
-
-        return $this;
-    }
-
-    public function getTemps4(): ?string
-    {
-        return $this->Temps4;
-    }
-
-    public function setTemps4(string $Temps4): self
-    {
-        $this->Temps4 = $Temps4;
-
-        return $this;
-    }
-
-    public function getTemps2020(): ?string
-    {
-        return $this->Temps2020;
-    }
-
-    public function setTemps2020(string $Temps2020): self
-    {
-        $this->Temps2020 = $Temps2020;
-
-        return $this;
-    }
-
-    public function getTemps2021(): ?string
-    {
-        return $this->Temps2021;
-    }
-
-    public function setTemps2021(string $Temps2021): self
-    {
-        $this->Temps2021 = $Temps2021;
-
-        return $this;
-    }
-
-    public function getIndicateurPredefini(): ?string
-    {
-        return $this->IndicateurPredefini;
-    }
-
-    public function setIndicateurPredefini(string $IndicateurPredefini): self
-    {
-        $this->IndicateurPredefini = $IndicateurPredefini;
-
-        return $this;
-    }
-
-    public function getIndicateurPerformance(): ?string
-    {
-        return $this->IndicateurPerformance;
-    }
-
-    public function setIndicateurPerformance(string $IndicateurPerformance): self
-    {
-        $this->IndicateurPerformance = $IndicateurPerformance;
-
-        return $this;
-    }
-
-    public function getObjectiveAAtendre(): ?string
-    {
-        return $this->ObjectiveAAtendre;
-    }
-
-    public function setObjectiveAAtendre(string $ObjectiveAAtendre): self
-    {
-        $this->ObjectiveAAtendre = $ObjectiveAAtendre;
-
-        return $this;
-    }
-
-    public function getEtatInitial(): ?string
-    {
-        return $this->EtatInitial;
-    }
-
-    public function setEtatInitial(string $EtatInitial): self
-    {
-        $this->EtatInitial = $EtatInitial;
-
-        return $this;
-    }
-
-    public function getEtatActuel(): ?string
-    {
-        return $this->EtatActuel;
-    }
-
-    public function setEtatActuel(string $EtatActuel): self
-    {
-        $this->EtatActuel = $EtatActuel;
-
-        return $this;
-    }
-
-    public function getEtatActuelIndiacteur(): ?string
-    {
-        return $this->EtatActuelIndiacteur;
-    }
-
-    public function setEtatActuelIndiacteur(string $EtatActuelIndiacteur): self
-    {
-        $this->EtatActuelIndiacteur = $EtatActuelIndiacteur;
-
-        return $this;
-    }
-
-    public function getCommentaire(): ?string
-    {
-        return $this->Commentaire;
-    }
-
-    public function setCommentaire(string $Commentaire): self
-    {
-        $this->Commentaire = $Commentaire;
-
-        return $this;
-    }
-
-    public function getEnjeu(): ?Enjeu
-    {
-        return $this->Enjeu;
-    }
-
-    public function setEnjeu(?Enjeu $Enjeu): self
-    {
-        $this->Enjeu = $Enjeu;
-
-        return $this;
-    }
-
-    public function getProcessLie(): ?Processus
+    public function getProcessLie(): ?Process
     {
         return $this->ProcessLie;
     }
 
-    public function setProcessLie(?Processus $ProcessLie): self
+    public function setProcessLie(?Process $ProcessLie): self
     {
         $this->ProcessLie = $ProcessLie;
 
         return $this;
     }
 
-    public function getAvencement(): ?float
-    {
-        return $this->Avencement;
-    }
 
-    public function setAvencement(float $Avencement): self
-    {
-        $this->Avencement = $Avencement;
-
-        return $this;
-    }
 
     /**
-     * @return Collection|PlanDeAction[]
+     * @return Collection|ActionPlan[]
      */
     public function getNumAction(): Collection
     {
         return $this->NumAction;
     }
 
-    public function addNumAction(PlanDeAction $numAction): self
+    public function addNumAction(ActionPlan $numAction): self
     {
         if (!$this->NumAction->contains($numAction)) {
             $this->NumAction[] = $numAction;
@@ -344,7 +403,7 @@ class Objective
         return $this;
     }
 
-    public function removeNumAction(PlanDeAction $numAction): self
+    public function removeNumAction(ActionPlan $numAction): self
     {
         if ($this->NumAction->contains($numAction)) {
             $this->NumAction->removeElement($numAction);

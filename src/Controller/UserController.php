@@ -131,6 +131,29 @@ class UserController extends AbstractController
         return new JsonResponse('error1');
     }
 
+    /**
+     * @Route("/my_registerAdmin", name="app_registerAdmin")
+     */
+    public function registerAdmin(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    {
+        // success
+        if ($request->isMethod('POST')) {
+            $user = new User();
+            $user->setEmail($request->request->get('email'));
+            $user->setUsername($request->request->get('username'));
+            $res = array( 'roles' => 'ROLE_ADMIN');
+            $user->setRoles($res);
+            $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+
+            $em->flush();
+            return new JsonResponse('success');
+        }
+
+        return new JsonResponse('error1');
+    }
+
 
     /**
      * @Route("/check-email-to-reset", name="check_email_to_reset")

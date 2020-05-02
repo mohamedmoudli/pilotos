@@ -2,71 +2,71 @@
 
 namespace App\Repository;
 
-use App\Entity\Partieinteresse;
+use App\Entity\IntersetedParty;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method Partieinteresse|null find($id, $lockMode = null, $lockVersion = null)
- * @method Partieinteresse|null findOneBy(array $criteria, array $orderBy = null)
- * @method Partieinteresse[]    findAll()
- * @method Partieinteresse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method IntersetedParty|null find($id, $lockMode = null, $lockVersion = null)
+ * @method IntersetedParty|null findOneBy(array $criteria, array $orderBy = null)
+ * @method IntersetedParty[]    findAll()
+ * @method IntersetedParty[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PartieInteresseRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Partieinteresse::class);
+        parent::__construct($registry, IntersetedParty::class);
     }
 
-    public function getNbreCategories(){
+    public function getNbreCategory(){
         $em = $this->getEntityManager();
 //        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
-//        FROM App\Entity\Partieinteresse p left outer JOIN App\Entity\Categoriepi c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
 //        return $query->execute();
         $query = $em->createQueryBuilder()->select('c.id as id')
-            ->addSelect('c.nomcat as Nom')
-            ->addSelect('count(p.CategoriesPI) as nbre')
-            ->from('App\Entity\Categoriepi', 'c')
-            ->leftjoin('App\Entity\Partieinteresse', 'p', 'with', 'c.id = p.CategoriesPI')
+            ->addSelect('c.NameCategory as Nom')
+            ->addSelect('count(p.CategoryInterestedParty) as nbre')
+            ->from('App\Entity\CategoryeInterestedParty', 'c')
+            ->leftjoin('App\Entity\IntersetedParty', 'p', 'with', 'c.id = p.CategoryInterestedParty')
             ->groupBy('c.id')
             ->getQuery()->getArrayResult();
         return $query;
     }
-    public function getPIpertinante(int $seul){
+    public function getPIpertinante(int $threshold){
         $em = $this->getEntityManager();
-        $query = $em->createQuery("SELECT p.id as id,  p.interet as interet , p.Influence as Influence , p.Pouvoir as Pouvoir , p.Poids as Poids , p.NomPI as NomPI FROM App\Entity\Partieinteresse p
-         join App\Entity\Categoriepi c where c.id = p.CategoriesPI
-         AND p.Poids > $seul
+        $query = $em->createQuery("SELECT p.id as id,  p.Interest as Interest , p.Influence as Influence , p.Power as Power , p.Weight as Weight , p.NameInterestedParty as NameInterestedParty FROM App\Entity\IntersetedParty p
+         join App\Entity\CategoryeInterestedParty c where c.id = p.CategoryInterestedParty
+         AND p.Weight  > $threshold
          GROUP BY p.id ");
         return $query->execute();
     }
 
     public function getpoid(int $seul){
         $em = $this->getEntityManager();
-        $query = $em->createQuery("SELECT p.id as id, c.nomcat as nomcat , p.NomPI as NomPI FROM App\Entity\Partieinteresse p
-         join App\Entity\Categoriepi c where c.id = p.CategoriesPI
+        $query = $em->createQuery("SELECT p.id as id, c.NameCategory as nomcat , p.NomPI as NomPI FROM App\Entity\IntersetedParty p
+         join App\Entity\CategoryeInterestedParty c where c.id = p.CategoryInterestedParty
          AND p.Poids > $seul
          GROUP BY p.id ");
         return $query->execute();
     }
     public function getNomCategories(){
         $em = $this->getEntityManager();
-        $query = $em->createQuery("SELECT  p.nomcat   FROM App\Entity\Categoriepi p
-         GROUP BY p.nomcat ");
+        $query = $em->createQuery("SELECT  p.NameCategory   FROM App\Entity\Categoriepi p
+         GROUP BY p.NameCategory ");
         return $query->execute();
     }
 
     public function getcoutnbCategories(){
         $em = $this->getEntityManager();
-        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre FROM App\Entity\Partieinteresse p
-         join App\Entity\Categoriepi c where c.id = p.CategoriesPI
-         GROUP BY p.CategoriesPI");
+        $query = $em->createQuery("SELECT c.id as id, c.NameCategory as nomcat, COUNT(p.CategoryInterestedParty) as nbre FROM App\Entity\IntersetedParty p
+         join App\Entity\CategoryeInterestedParty c where c.id = p.CategoryInterestedParty
+         GROUP BY p.CategoryInterestedParty");
         return $query->execute();
     }
 
     // /**
-    //  * @return Partieinteresse[] Returns an array of Partieinteresse objects
+    //  * @return IntersetedParty[] Returns an array of IntersetedParty objects
     //  */
     /*
      $em=$this->getDoctrine()->getManager();
@@ -89,7 +89,7 @@ $query = $em->createQuery(
     */
 
     /*
-    public function findOneBySomeField($value): ?Partieinteresse
+    public function findOneBySomeField($value): ?IntersetedParty
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Partieinteresse;
+use App\Entity\IntersetedParty;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,7 +24,7 @@ class PartieInteresseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Partieinteresse::class,
+            'data_class' => IntersetedParty::class,
         ]);
     }
 }

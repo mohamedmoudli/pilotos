@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Categoriepi;
+use App\Entity\CategoryeInterestedParty;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +19,7 @@ class CategorieType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Categoriepi::class,
+            'data_class' => CategoryeInterestedParty::class,
         ]);
     }
 }
