@@ -41,11 +41,11 @@ class ObjectiveController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $objective = new Objective();
 
-            $idEnjeu = $request->get('idStake');
+            $idStake = $request->get('idStake');
             $idprocess = $request->get('idprocess');
 
 
-            $res = intval($idEnjeu);
+            $res = intval($idStake);
 
             $res1 = intval($idprocess);
             $objective->setDescription($request->request->get('Description'));
@@ -74,7 +74,9 @@ class ObjectiveController extends AbstractController
             $stake = $em->getRepository(Stake::class)->findOneById($res);
 
 
+
             $objective->setStake($stake);
+            $objective->setDescriptionStake($stake->getDescription());
             $processRisque = $em->getRepository(Process::class)->findOneById($res1);
             $objective->setProcessLie($processRisque);
 
@@ -98,16 +100,16 @@ class ObjectiveController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $pipertinantes = $entityManager->getRepository(Objective::class)->findAll();
+        $objectives = $entityManager->getRepository(Objective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($pipertinantes, 'json', ["attributes" => ['id' ,  'NumAction'=> ['id' , 'Origine']]]);
+        $response = $serializer->normalize($objectives, 'json', ["attributes" => ['id' ,  'NumAction'=> ['id' , 'Origine']]]);
 
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
             foreach ($response as  $pipertinante ){;
-                $pipertinanteObj = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
+                $Objective = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
 
-                $numActions = $pipertinanteObj->getNumAction();
+                $numActions = $Objective->getNumAction();
                 $objective = new Objective();
                 $somme =0;
                 $count =0;
@@ -118,11 +120,11 @@ class ObjectiveController extends AbstractController
                 }
 
                 if($count){
-                    $pipertinanteObj->setAdvancement($somme/$count);
+                    $Objective->setAdvancement($somme/$count);
                 }
 
 
-                $entityManager->persist($pipertinanteObj);
+                $entityManager->persist($Objective);
                 $entityManager->flush();
             }
         }
@@ -138,56 +140,56 @@ class ObjectiveController extends AbstractController
      * @Route("/savehistoricalObjective", name="savehistoricalObjective")
      * methods={"GET"}
      */
-    public function savehistoriqueObjective(Request $request )
+    public function savehistoricalObjective(Request $request )
     {
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $pipertinantes = $entityManager->getRepository(Objective::class)->findAll();
+        $objectives = $entityManager->getRepository(Objective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($pipertinantes, 'json', ["attributes" => ['id' ,'Description' ,'Time1' , 'Time2' ,'Time3' , 'Time4' , 'Time2020' ,'Time2021' ,
+        $response = $serializer->normalize($objectives, 'json', ["attributes" => ['id' ,'Description' ,'Time1' , 'Time2' ,'Time3' , 'Time4' , 'Time2020' ,'Time2021' ,
             'ProcessLie' , 'PredefinedIndicator' , 'PerformanceIndicator' , 'ObjectiveToWait', 'InitialState' , 'CurrentStateIndiactor' ,
             'Advancement', 'Commentaire' , 'CurrentState' , 'planDeActions'=> ['id' , 'Origine']]]);
 
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
             foreach ($response as  $pipertinante ){
-                $historique = new historicalObjective();
-                $pipertinanteObj = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
-                $enjeu = new Stake();
-                $enjeu = $pipertinanteObj->getStake();
+                $historical = new historicalObjective();
+                $objective = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
+                $stake = new Stake();
+                $stake = $objective->getStake();
                 $processlie = new Process();
-                $processlie = $pipertinanteObj->getProcessLie();
+                $processlie = $objective->getProcessLie();
                 $numActions = new ActionPlan();
-                $numActions = $pipertinanteObj->getNumAction();
+                $numActions = $objective->getNumAction();
                 foreach ($numActions as  $numAction ){
-                    $historique->addNumAction($numAction);
+                    $historical->addNumAction($numAction);
                 }
 
-                $historique->setDescription($pipertinanteObj->getDescription());
-                $historique->setTime1($pipertinanteObj->getTime1());
-                $historique->setTime2($pipertinanteObj->getTime2());
-                $historique->setTime3($pipertinanteObj->getTime3());
-                $historique->setTime4($pipertinanteObj->getTime4());
-                $historique->setTime2020($pipertinanteObj->getTime2020());
-                $historique->setTime2021($pipertinanteObj->getTime2021());
-                $historique->setPredefinedIndicator($pipertinanteObj->getPredefinedIndicator());
-                $historique->setPerformanceIndicator($pipertinanteObj->getPerformanceIndicator());
-                $historique->setObjectiveToWait($pipertinanteObj->getObjectiveToWait());
-                $historique->setInitialState($pipertinanteObj->getInitialState());
-                $historique->setCurrentStateIndicator($pipertinanteObj->getCurrentStateIndiactor());
-                $historique->setAdvancement($pipertinanteObj->getAdvancement());
-                $historique->setCurrentState($pipertinanteObj->getCurrentState());
-                $historique->setComment($pipertinanteObj->getComment());
+                $historical->setDescription($objective->getDescription());
+                $historical->setTime1($objective->getTime1());
+                $historical->setTime2($objective->getTime2());
+                $historical->setTime3($objective->getTime3());
+                $historical->setTime4($objective->getTime4());
+                $historical->setTime2020($objective->getTime2020());
+                $historical->setTime2021($objective->getTime2021());
+                $historical->setPredefinedIndicator($objective->getPredefinedIndicator());
+                $historical->setPerformanceIndicator($objective->getPerformanceIndicator());
+                $historical->setObjectiveToWait($objective->getObjectiveToWait());
+                $historical->setInitialState($objective->getInitialState());
+                $historical->setCurrentStateIndicator($objective->getCurrentStateIndiactor());
+                $historical->setAdvancement($objective->getAdvancement());
+                $historical->setCurrentState($objective->getCurrentState());
+                $historical->setComment($objective->getComment());
 
 
 
 
-                $historique->setStake($enjeu->getDescription());
-                $historique->setProcesslie($processlie->getProcess());
+                $historical->setStake($stake->getDescription());
+                $historical->setProcesslie($processlie->getProcess());
 
-                $historique->setDate(new \DateTime());
-                $entityManager->persist($historique);
+                $historical->setDate(new \DateTime());
+                $entityManager->persist($historical);
                 $entityManager->flush();
             }
         }
@@ -207,11 +209,11 @@ class ObjectiveController extends AbstractController
     public function GetObjectiveByAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Objective::class)->findAll();
+        $objectives = $entityManager->getRepository(Objective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Description' , 'Stake' , 'Time1' , 'Time2' , 'Time3' , 'Time4' ,
+        $response = $serializer->normalize($objectives, 'json', ["attributes" => ['id' ,  'Description' , 'DescriptionStake' , 'Time1' , 'Time2' , 'Time3' , 'Time4' ,
             'Time2020' , 'Time2021' , 'ProcessLie' , 'PredefinedIndicator' , 'PerformanceIndicator' , 'ObjectiveToWait' ,
-            'InitialState' ,  'NumAction'=> ['id' , 'Origine'] , 'CurrentStateIndicator'  , 'Advancement' , 'CurrentState' ,
+            'InitialState' ,  'NumAction'=> ['id' , 'Origine'] , 'CurrentStateIndiactor'  , 'Advancement' , 'CurrentState' ,
             'Comment']]);
         return new JsonResponse($response);
     }
@@ -221,12 +223,12 @@ class ObjectiveController extends AbstractController
      * @Route("/GethistoricalObjective", name="GethistoricalObjective")
      * methods={"GET"}
      */
-    public function GethistoriqueObjective(Request $request)
+    public function GethistoricalObjective(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $historiqueOpportunite = $entityManager->getRepository(historicalObjective::class)->findAll();
+        $historicalObjective = $entityManager->getRepository(historicalObjective::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,   'Description' , 'Stake' , 'Time1' , 'Time2' , 'Time3' , 'Time4' ,
+        $response = $serializer->normalize($historicalObjective, 'json', ["attributes" => ['id' ,   'Description' , 'Stake' , 'Time1' , 'Time2' , 'Time3' , 'Time4' ,
             'Time2020' , 'Time2021' , 'ProcessLie' , 'PredefinedIndicator' , 'PerformanceIndicator' , 'ObjectiveToWait' ,
             'InitialState' ,  'NumAction'=> ['id' , 'Origin'] , 'CurrentStateIndicator' , 'Advancement' , 'CurrentState' , 'Comment' , 'Date'
             ]]);

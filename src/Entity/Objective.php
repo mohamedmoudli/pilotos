@@ -28,6 +28,10 @@ class Objective
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $DescriptionStake;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $Time1;
 
     /**
@@ -90,11 +94,7 @@ class Objective
      */
     private $Comment;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Stake")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $Stake;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="Process", inversedBy="objectives")
@@ -111,6 +111,12 @@ class Objective
      * @ORM\OneToMany(targetEntity="ActionPlan", mappedBy="Objective")
      */
     private $NumAction;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Stake", inversedBy="objectives")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Stake;
 
     public function __construct()
     {
@@ -415,4 +421,21 @@ class Objective
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDescriptionStake()
+    {
+        return $this->DescriptionStake;
+    }
+
+    /**
+     * @param mixed $DescriptionStake
+     */
+    public function setDescriptionStake($DescriptionStake): void
+    {
+        $this->DescriptionStake = $DescriptionStake;
+    }
+
 }

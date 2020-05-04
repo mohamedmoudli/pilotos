@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,17 +33,23 @@ class Stake
      */
     private $Type;
 
+
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\CategoryStakeInternal", inversedBy="stakes1")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CategoryStakeInternal", inversedBy="stakes")
      */
     private $CategoryStakeInternal;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\CategoryStakeExternal", inversedBy="stakes1")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CategoryStakeExternal", inversedBy="stakes")
      */
     private $CategoryStakeExternal;
 
 
+
+    public function __construct()
+    {
+        $this->objectives = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -98,6 +106,7 @@ class Stake
 
         return $this;
     }
+
 
 
 }

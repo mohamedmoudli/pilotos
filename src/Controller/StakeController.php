@@ -48,7 +48,7 @@ class StakeController extends AbstractController
 
         $categoriepi = $entityManager->getRepository(CategoryStakeExternal::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriepi, 'json', ["attributes" => ['id', 'NameCategoryStakExternal', 'stakes' => ['id', 'Description', 'Type'=>['id']]]]);
+        $response = $serializer->normalize($categoriepi, 'json', ["attributes" => ['id', 'NameCategoryStakExternal', 'stakes' => ['id', 'Description', 'Type']]]);
 
         return new JsonResponse($response);
 

@@ -29,7 +29,7 @@ class OpportunityController extends AbstractController
     /**
      * @Route("/CreateOppOrtunite", name="CreateOppOrtunite")
      */
-    public function createOpportunite(Request $request): Response
+    public function createOpportunity(Request $request): Response
     {
         // success
 
@@ -103,7 +103,7 @@ class OpportunityController extends AbstractController
     /**
      * @Route("/UpdateOppOrtunity/{id}", name="UpdateOppOrtunity")
      */
-    public function ReevaluationOpportunite(Request $request , $id): Response
+    public function ReevaluateOpportunity(Request $request , $id): Response
     {
         // success
 
@@ -179,30 +179,30 @@ class OpportunityController extends AbstractController
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
             foreach ($response as  $pipertinante ){
-                $historique = new HistoricalOpportunity();
-                $pipertinanteObj = $this->getDoctrine()->getRepository(Opportunity::class)->find($pipertinante['id']);
+                $historicalOpportunity = new HistoricalOpportunity();
+                $opportunity = $this->getDoctrine()->getRepository(Opportunity::class)->find($pipertinante['id']);
 
                 $numActions = new ActionPlan();
-                $numActions = $pipertinanteObj->getNumAction();
+                $numActions = $opportunity->getNumAction();
                 $numActionsreevaluation = new ActionPlan();
-                $numActionsreevaluation  = $pipertinanteObj->getNumActionReevaluation();
+                $numActionsreevaluation  = $opportunity->getNumActionReevaluation();
                 $stateOpportunity = new StateOpportunity();
-                $stateOpportunity = $pipertinanteObj->getStateOpportunity();
+                $stateOpportunity = $opportunity->getStateOpportunity();
                 foreach ($numActions as  $numAction ){
-                    $historique->addNumeroAction($numAction);
+                    $historicalOpportunity->addNumeroAction($numAction);
                 }
                 foreach ($numActionsreevaluation as  $numActionreevaluation ){
-                    $historique->addNumeroAction($numActionreevaluation);
+                    $historicalOpportunity->addNumeroAction($numActionreevaluation);
                 }
 
 
-                $historique->setEtat($stateOpportunity->getNameStateOpportunity());
+                $historicalOpportunity->setEtat($stateOpportunity->getNameStateOpportunity());
 
 
-                $historique->setCommentaire($pipertinanteObj->getComment());
-                $historique->setDate(new \DateTime());
+                $historicalOpportunity->setCommentaire($opportunity->getComment());
+                $historicalOpportunity->setDate(new \DateTime());
 
-                $entityManager->persist($historique);
+                $entityManager->persist($historicalOpportunity);
                 $entityManager->flush();
             }
         }
@@ -215,7 +215,7 @@ class OpportunityController extends AbstractController
      * @Route("/GetOpportunityByAction", name="GetOpportunityByAction")
      * methods={"GET"}
      */
-    public function GetOpportuniteByAction(Request $request)
+    public function GetOpportunityByAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoriesrisque = $entityManager->getRepository(Opportunity::class)->findAll();

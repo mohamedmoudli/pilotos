@@ -33,7 +33,7 @@ class RiskControlleur extends AbstractController
     /**
      * @Route("/saveRisk", name="getRisque")
      */
-    public function createRisque(Request $request): Response
+    public function createRisk(Request $request): Response
     {
         // success
 
@@ -101,7 +101,7 @@ class RiskControlleur extends AbstractController
      * @Route("/savehistoricalRisk", name="savehistoricalRisk")
      * methods={"GET"}
      */
-    public function savehistoriqueRisque(Request $request )
+    public function savehistoricalRisk(Request $request )
     {
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -113,32 +113,32 @@ class RiskControlleur extends AbstractController
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
             foreach ($response as  $pipertinante ){
-                $historique = new HistoricalRisk();
-                $pipertinanteObj = $this->getDoctrine()->getRepository(Risk::class)->find($pipertinante['id']);
+                $historicalRisk = new HistoricalRisk();
+                $risk = $this->getDoctrine()->getRepository(Risk::class)->find($pipertinante['id']);
                 $strategic = new StrategicRisk();
-                $strategic = $pipertinanteObj->getStrategicRisk();
+                $strategic = $risk->getStrategicRisk();
                 $processlie = new Process();
-                $processlie = $pipertinanteObj->getProcess();
+                $processlie = $risk->getProcess();
                 $StateRisk = new StateRisk();
-                $StateRisk = $pipertinanteObj->getStateRisk();
+                $StateRisk = $risk->getStateRisk();
                 $numActions = new ActionPlan();
-                $numActions = $pipertinanteObj->getactionPlans();
+                $numActions = $risk->getactionPlans();
                 foreach ($numActions as  $numAction ){
-                    $historique->addNumeroAction($numAction);
+                    $historicalRisk->addNumeroAction($numAction);
                 }
-                $historique->setCriticite($pipertinanteObj->getCriticality());
+                $historicalRisk->setCriticite($risk->getCriticality());
 
-                $historique->setDecision($pipertinanteObj->getDecision());
+                $historicalRisk->setDecision($risk->getDecision());
 
 
 
-                $historique->setStrategique($strategic->getNameStrategicRisk());
-                $historique->setEtatRisque($StateRisk->getNameStateRisk());
-                $historique->setProcesslie($processlie->getProcess());
+                $historicalRisk->setStrategique($strategic->getNameStrategicRisk());
+                $historicalRisk->setEtatRisque($StateRisk->getNameStateRisk());
+                $historicalRisk->setProcesslie($processlie->getProcess());
 
-                $historique->setCommentaires($pipertinanteObj->getComment());
-                $historique->setDate(new \DateTime());
-                $entityManager->persist($historique);
+                $historicalRisk->setCommentaires($risk->getComment());
+                $historicalRisk->setDate(new \DateTime());
+                $entityManager->persist($historicalRisk);
                 $entityManager->flush();
             }
         }
@@ -154,12 +154,12 @@ class RiskControlleur extends AbstractController
      * @Route("/getRisk", name="getRisk")
      * methods={"GET"}
      */
-    public function GetRisqueByAction(Request $request)
+    public function GetRiskByAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Risk::class)->findAll();
+        $risk = $entityManager->getRepository(Risk::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,'Description' ,'ShortTerm' , 'MediumTerm' ,'LongTerm' , 'DateIdentification' ,  'Causes' , 'Censequence' ,'Gravity' , 'Probability' , 'detectability' , 'Criticality' , 'Decision' , 'StateRisk' , 'Comment' , 'CategoryRisk' ,'Process'  , 'StrategicRisk' , 'actionPlans'=> ['id' , 'Origine']]]);
+        $response = $serializer->normalize($risk, 'json', ["attributes" => ['id' ,'Description' ,'ShortTerm' , 'MediumTerm' ,'LongTerm' , 'DateIdentification' ,  'Causes' , 'Censequence' ,'Gravity' , 'Probability' , 'detectability' , 'Criticality' , 'Decision' , 'StateRisk' , 'Comment' , 'CategoryRisk' ,'Process'  , 'StrategicRisk' , 'actionPlans'=> ['id' , 'Origine']]]);
         return new JsonResponse($response);
     }
 
@@ -168,25 +168,25 @@ class RiskControlleur extends AbstractController
      * @Route("/GetByAction", name="GetbyRisque")
      * methods={"GET"}
      */
-    public function GetRisque(Request $request)
+    public function GetRisk(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Risk::class)->findAll();
-        dump($categoriesrisque);
+        $categoryrisk = $entityManager->getRepository(Risk::class)->findAll();
+        dump($categoryrisk);
 
-        return new JsonResponse($categoriesrisque);
+        return new JsonResponse($categoryrisk);
     }
 
     /**
      * @Route("/gethistoricalRisk", name="gethistoricalRisk")
      * methods={"GET"}
      */
-    public function GethistoriqueRisque(Request $request)
+    public function GethistoricalRisk(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(HistoricalRisk::class)->findAll();
+        $historicalrisk = $entityManager->getRepository(HistoricalRisk::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,  'Criticite' , 'Decision' , 'StateRisk' ,
+        $response = $serializer->normalize($historicalrisk, 'json', ["attributes" => ['id' ,  'Criticite' , 'Decision' , 'StateRisk' ,
             'Commentaires' ,  'Processlie'  , 'Strategique' ,'Date' , 'NumeroAction'=> ['id' , 'Origine']]]);
         return new JsonResponse($response);
     }
@@ -200,10 +200,10 @@ class RiskControlleur extends AbstractController
     public function GetNbreEtatRisque(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Risk::class)->getNbreStateRisk();
+        $nbState = $entityManager->getRepository(Risk::class)->getNbreStateRisk();
 
 
-        return new JsonResponse($categoriesrisque);
+        return new JsonResponse($nbState);
     }
 
 
@@ -214,10 +214,10 @@ class RiskControlleur extends AbstractController
     public function GetNbreCategorieRisque(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Risk::class)->getNbreCategoryRisk();
+        $nbcategory = $entityManager->getRepository(Risk::class)->getNbreCategoryRisk();
 
 
-        return new JsonResponse($categoriesrisque);
+        return new JsonResponse($nbcategory);
     }
 
 }

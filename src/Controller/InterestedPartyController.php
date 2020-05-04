@@ -29,14 +29,14 @@ class InterestedPartyController extends AbstractController
      * @Route("/partieinteresse/cat1", name="partie_interesse12")
      * methods={"GET"}
      */
-    public function findbycategories(Request $request)
+    public function findbycategory(Request $request)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $categoriepi = $entityManager->getRepository(CategoryeInterestedParty::class)->findAll();
+        $categorypi = $entityManager->getRepository(CategoryeInterestedParty::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriepi, 'json', ["attributes" => ['id', 'NameCategory', 'intersetedParties' => ['id', 'NameInterestedParty', 'Weight']]]);
+        $response = $serializer->normalize($categorypi, 'json', ["attributes" => ['id', 'NameCategory', 'intersetedParties' => ['id', 'NameInterestedParty', 'Weight']]]);
 
         return new JsonResponse($response);
 
@@ -102,18 +102,18 @@ class InterestedPartyController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $pipertinantes = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($seul);
+        $intersetedParties = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($seul);
 
 
-        if(count($pipertinantes)){
+        if(count($intersetedParties)){
             /** @var IntersetedParty $pipertinante */
-            foreach ($pipertinantes as  $pipertinante ){
-                $historique = new HistoricalIntersetedParty();
-                $pipertinanteObj = $this->getDoctrine()->getRepository(IntersetedParty::class)->find($pipertinante['id']);
-                $historique->setPoids($pipertinanteObj->getPower());
-                $historique->setNomPI($pipertinanteObj->getNameInterestedParty());
-                $historique->setDate(new \DateTime());
-                $entityManager->persist($historique);
+            foreach ($intersetedParties as  $pipertinante ){
+                $historicalIntersetedParty = new HistoricalIntersetedParty();
+                $intersetedParty = $this->getDoctrine()->getRepository(IntersetedParty::class)->find($pipertinante['id']);
+                $historicalIntersetedParty->setPoids($intersetedParty->getPower());
+                $historicalIntersetedParty->setNomPI($intersetedParty->getNameInterestedParty());
+                $historicalIntersetedParty->setDate(new \DateTime());
+                $entityManager->persist($historicalIntersetedParty);
                 $entityManager->flush();
             }
         }

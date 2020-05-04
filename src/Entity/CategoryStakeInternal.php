@@ -59,7 +59,7 @@ class CategoryStakeInternal
     /**
      * @return Collection|Stake[]
      */
-    public function getstakes(): Collection
+    public function getStakes(): Collection
     {
         return $this->stakes;
     }
