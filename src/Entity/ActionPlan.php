@@ -82,15 +82,6 @@ class ActionPlan
      */
     private $CriteriaEfficiency;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $StateOfEfficacy;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $CurrentState;
 
     /**
      * @ORM\ManyToOne(targetEntity="ExigencyInterestedParty", inversedBy="planDeActions")
@@ -139,6 +130,18 @@ class ActionPlan
      * @ORM\JoinColumn(nullable=true)
      */
     private $HistoricalObjective;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\CurrentStateActionPlan", inversedBy="ActionPlans")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $currentStateActionPlan;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\StateEfficacyActionPlan", inversedBy="ActionPlans")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $stateEfficacyActionPlan;
 
 
     public function getId(): ?int
@@ -278,29 +281,6 @@ class ActionPlan
         return $this;
     }
 
-    public function getStateOfEfficacy(): ?string
-    {
-        return $this->StateOfEfficacy;
-    }
-
-    public function setStateOfEfficacy(string $StateOfEfficacy): self
-    {
-        $this->StateOfEfficacy = $StateOfEfficacy;
-
-        return $this;
-    }
-
-    public function getCurrentState(): ?string
-    {
-        return $this->CurrentState;
-    }
-
-    public function setCurrentState(string $CurrentState): self
-    {
-        $this->CurrentState = $CurrentState;
-
-        return $this;
-    }
 
     public function getExigencyInterestedParty(): ?ExigencyInterestedParty
     {
@@ -444,6 +424,30 @@ class ActionPlan
     public function setDescription($Description): void
     {
         $this->Description = $Description;
+    }
+
+    public function getCurrentStateActionPlan(): ?CurrentStateActionPlan
+    {
+        return $this->currentStateActionPlan;
+    }
+
+    public function setCurrentStateActionPlan(?CurrentStateActionPlan $currentStateActionPlan): self
+    {
+        $this->currentStateActionPlan = $currentStateActionPlan;
+
+        return $this;
+    }
+
+    public function getStateEfficacyActionPlan(): ?StateEfficacyActionPlan
+    {
+        return $this->stateEfficacyActionPlan;
+    }
+
+    public function setStateEfficacyActionPlan(?StateEfficacyActionPlan $stateEfficacyActionPlan): self
+    {
+        $this->stateEfficacyActionPlan = $stateEfficacyActionPlan;
+
+        return $this;
     }
 
 

@@ -19,6 +19,41 @@ class PlanDeActionRepository extends ServiceEntityRepository
         parent::__construct($registry, ActionPlan::class);
     }
 
+    public function getCountStateEfficacity(){
+
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NameStateEfficacy as Type')
+            ->addSelect('count(p.stateEfficacyActionPlan) as nbre')
+            ->from('App\Entity\StateEfficacyActionPlan', 'c')
+            ->leftjoin('App\Entity\ActionPlan', 'p', 'with', 'c.id = p.stateEfficacyActionPlan')
+            ->groupBy('c.id')
+            ->getQuery()->getArrayResult();
+        return $query;
+
+    }
+
+    public function getCountCurrentState(){
+
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NameCurrentState as Type')
+            ->addSelect('count(p.currentStateActionPlan) as nbre')
+            ->from('App\Entity\CurrentStateActionPlan', 'c')
+            ->leftjoin('App\Entity\ActionPlan', 'p', 'with', 'c.id = p.currentStateActionPlan')
+            ->groupBy('c.id')
+            ->getQuery()->getArrayResult();
+        return $query;
+
+    }
+
+
     // /**
     //  * @return ActionPlan[] Returns an array of ActionPlan objects
     //  */

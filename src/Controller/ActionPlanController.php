@@ -5,6 +5,10 @@ namespace App\Controller;
 
 
 use App\Entity\CategoryOpportunity;
+use App\Entity\CurrentStateActionPlan;
+use App\Entity\IntersetedParty;
+use App\Entity\Stake;
+use App\Entity\StateEfficacyActionPlan;
 use App\Entity\StateOpportunity;
 use App\Entity\ExigencyInterestedParty;
 use App\Entity\Objective;
@@ -62,10 +66,13 @@ class ActionPlanController extends AbstractController
             $planaction->setClosingCriterion($request->request->get('ClosingCriterion'));
             $planaction->setProofOfClosure($request->request->get('ProofOfClosure'));
             $planaction->setCriteriaEfficiency($request->request->get('CriteriaEfficiency'));
-            $planaction->setStateOfEfficacy($request->request->get('StateOfEfficacy'));
-            $planaction->setCurrentState($request->request->get('CurrentState'));
             $planaction->setComment($request->request->get('Comment'));
-
+            $idstateOfEfficacy = $request->get('StateOfEfficacy');
+            $idcurrentState = $request->get('CurrentState');
+            $stateOfEfficacy = $em->getRepository(StateEfficacyActionPlan::class)->findOneById($idstateOfEfficacy);
+            $currentState = $em->getRepository(CurrentStateActionPlan::class)->findOneById($idcurrentState);
+            $planaction->setStateEfficacyActionPlan($stateOfEfficacy);
+            $planaction->setCurrentStateActionPlan($currentState);
             $idExigency = $request->get('idExigency');
             $idrisk = $request->get('idrisk');
             $idobjective = $request->get('idObjective');
@@ -108,4 +115,29 @@ class ActionPlanController extends AbstractController
         return new JsonResponse('error1');
     }
 
+
+
+    /**
+     * @Route("/nembreStateEfficacity", name="nembreStateEfficacity")
+     * methods={"GET"}
+     */
+    public function nembreStateEfficacity(Request $request )
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        /* @var $partieinteresse IntersetedParty */
+        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountStateEfficacity();
+        return new JsonResponse($pipertinante);
+    }
+
+    /**
+     * @Route("/nembreCurrentState", name="nembreCurrentState")
+     * methods={"GET"}
+     */
+    public function nembreCurrentState(Request $request )
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        /* @var $partieinteresse IntersetedParty */
+        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountCurrentState();
+        return new JsonResponse($pipertinante);
+    }
 }
