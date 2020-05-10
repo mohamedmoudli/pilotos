@@ -51,6 +51,26 @@ class PlanDeActionRepository extends ServiceEntityRepository
             ->getQuery()->getArrayResult();
         return $query;
 
+
+
+    }
+    public function getCountCurrentStatebyProcess()
+    {
+
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('c.id as id')
+            ->addSelect('c.NameCurrentState as Type')
+            ->addSelect('s.Process as Process')
+            ->addSelect('count(p.currentStateActionPlan) as nbre')
+            ->from('App\Entity\CurrentStateActionPlan', 'c')
+            ->leftjoin('App\Entity\ActionPlan', 'p', 'with', 'c.id = p.currentStateActionPlan')
+            ->leftjoin('App\Entity\Process', 's', 'with', 's.id = p.Process')
+            ->groupBy('s.id' , 'c.id' , 'p.Process' )
+            ->getQuery()->getArrayResult();
+        return $query;
     }
 
 

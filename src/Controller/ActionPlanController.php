@@ -38,7 +38,7 @@ class ActionPlanController extends AbstractController
         $serializer = new Serializer([new ObjectNormalizer()]);
         $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,'Origin' , 'Description' , 'Action' , 'StartDatePanifies' ,'Delai' ,
             'Responsible' ,  'Director' , 'Consult' ,'Advancement' , 'Comment' , 'ClosingCriterion' , 'ProofOfClosure' , 'CriteriaEfficiency' ,
-            'StateOfEfficacy' , 'CurrentState' , 'ExigencyInterestedParty'=>['id'] ,'Risk'=>['id']  , 'Opportunity'=>['id'] , 'OpportunityReevalution'=>['id'] , 'Objective'=>['id'] ]]);
+            'stateEfficacyActionPlan' , 'currentStateActionPlan' , 'ExigencyInterestedParty'=>['id'] ,'Risk'=>['id']  , 'Opportunity'=>['id'] , 'OpportunityReevalution'=>['id'] , 'Objective'=>['id'] ]]);
         return new JsonResponse($response);
     }
 
@@ -74,7 +74,7 @@ class ActionPlanController extends AbstractController
             $planaction->setStateEfficacyActionPlan($stateOfEfficacy);
             $planaction->setCurrentStateActionPlan($currentState);
             $idExigency = $request->get('idExigency');
-            $idrisk = $request->get('idrisk');
+            $idrisk = $request->get('idRisk');
             $idobjective = $request->get('idObjective');
             $idOpportunity = $request->get('idOpportunity');
             $idOpportunityreevaluation = $request->get('idOpportunityreevaluation');
@@ -88,22 +88,26 @@ class ActionPlanController extends AbstractController
             if($Risk){
                 $planaction->setRisk($Risk);
                 $planaction->setDescription($Risk->getDescription());
+                $planaction->setProcess($Risk->getProcess());
             }
 
             $opportunity = $em->getRepository(Opportunity::class)->findOneById($idOpportunity);
             if($opportunity){
                 $planaction->setOpportunity($opportunity);
                 $planaction->setDescription($opportunity->getDescription());
+                $planaction->setProcess($opportunity->getProcess());
             }
             $opportunityreevaluation = $em->getRepository(Opportunity::class)->findOneById($idOpportunityreevaluation);
             if($opportunityreevaluation){
                 $planaction->setOpportunityReevalution($opportunityreevaluation);
                 $planaction->setDescription($opportunityreevaluation->getDescription());
+                $planaction->setProcess($opportunityreevaluation->getProcess());
             }
             $objective = $em->getRepository(Objective::class)->findOneById($idobjective);
             if($objective){
                 $planaction->setObjective($objective);
                 $planaction->setDescription($objective->getDescription());
+                $planaction->setProcess($objective->getProcess());
             }
 
             $em->persist($planaction);
@@ -138,6 +142,18 @@ class ActionPlanController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
         $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountCurrentState();
+        return new JsonResponse($pipertinante);
+    }
+
+    /**
+     * @Route("/nembreCurrentStatebyProcess", name="nembreCurrentStatebyProcess")
+     * methods={"GET"}
+     */
+    public function nembreCurrentStatebyProcess(Request $request )
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        /* @var $partieinteresse IntersetedParty */
+        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountCurrentStatebyProcess();
         return new JsonResponse($pipertinante);
     }
 }

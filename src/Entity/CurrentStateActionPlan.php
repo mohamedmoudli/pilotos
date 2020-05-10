@@ -52,34 +52,4 @@ class CurrentStateActionPlan
         return $this;
     }
 
-    /**
-     * @return Collection|ActionPlan[]
-     */
-    public function getActionPlans(): Collection
-    {
-        return $this->ActionPlans;
-    }
-
-    public function addActionPlan(ActionPlan $actionPlan): self
-    {
-        if (!$this->ActionPlans->contains($actionPlan)) {
-            $this->ActionPlans[] = $actionPlan;
-            $actionPlan->setCurrentStateActionPlan($this);
-        }
-
-        return $this;
-    }
-
-    public function removeActionPlan(ActionPlan $actionPlan): self
-    {
-        if ($this->ActionPlans->contains($actionPlan)) {
-            $this->ActionPlans->removeElement($actionPlan);
-            // set the owning side to null (unless already changed)
-            if ($actionPlan->getCurrentStateActionPlan() === $this) {
-                $actionPlan->setCurrentStateActionPlan(null);
-            }
-        }
-
-        return $this;
-    }
 }

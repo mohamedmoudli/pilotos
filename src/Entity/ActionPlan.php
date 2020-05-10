@@ -143,6 +143,11 @@ class ActionPlan
      */
     private $stateEfficacyActionPlan;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Process", inversedBy="actionPlans")
+     */
+    private $Process;
+
 
     public function getId(): ?int
     {
@@ -446,6 +451,18 @@ class ActionPlan
     public function setStateEfficacyActionPlan(?StateEfficacyActionPlan $stateEfficacyActionPlan): self
     {
         $this->stateEfficacyActionPlan = $stateEfficacyActionPlan;
+
+        return $this;
+    }
+
+    public function getProcess(): ?Process
+    {
+        return $this->Process;
+    }
+
+    public function setProcess(?Process $Process): self
+    {
+        $this->Process = $Process;
 
         return $this;
     }

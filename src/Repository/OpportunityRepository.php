@@ -42,7 +42,7 @@ class OpportunityRepository extends ServiceEntityRepository
 //        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
 //        return $query->execute();
         $query = $em->createQueryBuilder()->select('c.id as id')
-            ->addSelect('c.NomCategorie as Nom')
+            ->addSelect('c.NameCategoryOpportunity as Nom')
             ->addSelect('count(p.CategoryOpportunity) as nbre')
             ->from('App\Entity\CategoryOpportunity', 'c')
             ->leftjoin('App\Entity\Opportunity', 'p', 'with', 'c.id = p.CategoryOpportunity')
