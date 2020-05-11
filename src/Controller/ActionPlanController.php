@@ -44,9 +44,9 @@ class ActionPlanController extends AbstractController
 
 
     /**
-     * @Route("/CreatePlandeAction", name="CreatePlandeAction")
+     * @Route("/CreatePlanAction", name="CreatePlanAction")
      */
-    public function createplandeAction(Request $request): Response
+    public function createplanAction(Request $request): Response
     {
         // success
 
@@ -93,21 +93,23 @@ class ActionPlanController extends AbstractController
 
             $opportunity = $em->getRepository(Opportunity::class)->findOneById($idOpportunity);
             if($opportunity){
+
                 $planaction->setOpportunity($opportunity);
+                dump($planaction->getOpportunity());
                 $planaction->setDescription($opportunity->getDescription());
-                $planaction->setProcess($opportunity->getProcess());
+                $planaction->setProcess($opportunity->getProcessLie());
             }
             $opportunityreevaluation = $em->getRepository(Opportunity::class)->findOneById($idOpportunityreevaluation);
             if($opportunityreevaluation){
                 $planaction->setOpportunityReevalution($opportunityreevaluation);
                 $planaction->setDescription($opportunityreevaluation->getDescription());
-                $planaction->setProcess($opportunityreevaluation->getProcess());
+                $planaction->setProcess($opportunityreevaluation->getProcessLie());
             }
             $objective = $em->getRepository(Objective::class)->findOneById($idobjective);
             if($objective){
                 $planaction->setObjective($objective);
                 $planaction->setDescription($objective->getDescription());
-                $planaction->setProcess($objective->getProcess());
+                $planaction->setProcess($objective->getProcessLie());
             }
 
             $em->persist($planaction);

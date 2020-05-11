@@ -96,37 +96,4 @@ class Process
         return $this;
     }
 
-    /**
-     * @return Collection|ActionPlan[]
-     */
-    public function getActionPlans(): Collection
-    {
-        return $this->actionPlans;
-    }
-
-    public function addActionPlan(ActionPlan $actionPlan): self
-    {
-        if (!$this->actionPlans->contains($actionPlan)) {
-            $this->actionPlans[] = $actionPlan;
-            $actionPlan->setProcess($this);
-        }
-
-        return $this;
-    }
-
-    public function removeActionPlan(ActionPlan $actionPlan): self
-    {
-        if ($this->actionPlans->contains($actionPlan)) {
-            $this->actionPlans->removeElement($actionPlan);
-            // set the owning side to null (unless already changed)
-            if ($actionPlan->getProcess() === $this) {
-                $actionPlan->setProcess(null);
-            }
-        }
-
-        return $this;
-    }
-
-
-
 }
