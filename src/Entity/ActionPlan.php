@@ -95,11 +95,6 @@ class ActionPlan
      */
     private $Risk;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Opportunity", inversedBy="NumAction")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $Opportunity;
 
     /**
      * @ORM\ManyToOne(targetEntity="Opportunity", inversedBy="NumActionReevaluation")
@@ -145,8 +140,15 @@ class ActionPlan
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Process", inversedBy="actionPlans")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $Process;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Opportunity", inversedBy="NumAction")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $Opportunity;
 
 
     public function getId(): ?int
@@ -311,17 +313,7 @@ class ActionPlan
         return $this;
     }
 
-    public function getOpportunity(): ?Opportunity
-    {
-        return $this->Opportunity;
-    }
 
-    public function setOpportunity(?Opportunity $opportunity): self
-    {
-        $this->opportunity = $opportunity;
-
-        return $this;
-    }
 
     public function getOpportunityReevalution(): ?Opportunity
     {
@@ -463,6 +455,18 @@ class ActionPlan
     public function setProcess(?Process $Process): self
     {
         $this->Process = $Process;
+
+        return $this;
+    }
+
+    public function getOpportunity(): ?Opportunity
+    {
+        return $this->Opportunity;
+    }
+
+    public function setOpportunity(?Opportunity $Opportunity): self
+    {
+        $this->Opportunity = $Opportunity;
 
         return $this;
     }

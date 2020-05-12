@@ -73,6 +73,23 @@ class PlanDeActionRepository extends ServiceEntityRepository
         return $query;
     }
 
+    public function getAdvencementbyProcess()
+    {
+
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('p.id as id')
+            ->addSelect('s.Process as process')
+            ->addSelect('AVG(p.Advancement) as avencement')
+            ->from('App\Entity\Process', 's')
+            ->join('App\Entity\ActionPlan', 'p', 'with', 's.id = p.Process')
+            ->groupBy('s.id' )
+            ->getQuery()->getArrayResult();
+        return $query;
+    }
+
 
     // /**
     //  * @return ActionPlan[] Returns an array of ActionPlan objects

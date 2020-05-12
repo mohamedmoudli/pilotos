@@ -154,10 +154,7 @@ class Opportunity
      */
     private $Comment;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ActionPlan", mappedBy="Opportunity")
-     */
-    private $NumAction;
+
 
     /**
      * @ORM\OneToMany(targetEntity="ActionPlan", mappedBy="OpportunityReevalution")
@@ -175,6 +172,11 @@ class Opportunity
      * @ORM\JoinColumn(nullable=true)
      */
     private $StateOpportunityReevaluation;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ActionPlan", mappedBy="Opportunity")
+     */
+    private $NumAction;
 
     public function __construct()
     {

@@ -95,7 +95,6 @@ class ActionPlanController extends AbstractController
             if($opportunity){
 
                 $planaction->setOpportunity($opportunity);
-                dump($planaction->getOpportunity());
                 $planaction->setDescription($opportunity->getDescription());
                 $planaction->setProcess($opportunity->getProcessLie());
             }
@@ -156,6 +155,17 @@ class ActionPlanController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
         $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountCurrentStatebyProcess();
+        return new JsonResponse($pipertinante);
+    }
+    /**
+     * @Route("/nembreAvencementbyProcess", name="nembreAvencementbyProcess")
+     * methods={"GET"}
+     */
+    public function nembreAvencementbyProcess(Request $request )
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        /* @var $partieinteresse IntersetedParty */
+        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcess();
         return new JsonResponse($pipertinante);
     }
 }
