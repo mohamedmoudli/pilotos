@@ -168,4 +168,29 @@ class ActionPlanController extends AbstractController
         $pipertinante = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcess();
         return new JsonResponse($pipertinante);
     }
+
+    /**
+     * @Route("/nembreAvencementbyProcessbyTimeLimit", name="nembreAvencementbyProcessbyTimeLimit")
+     * methods={"GET"}
+     */
+    public function nembreAvencementbyProcessbyTimeLimit(Request $request )
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        /* @var $partieinteresse IntersetedParty */
+        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcessbyTimeLimit();
+        return new JsonResponse($pipertinante);
+    }
+
+    /**
+     * @Route("/GetProcessByTimeLimit", name="GetProcessByTimeLimit")
+     * methods={"GET"}
+     */
+    public function GetProcessByTimeLimit(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $process = $entityManager->getRepository(ActionPlan::class)->findAll();
+        $serializer = new Serializer([new ObjectNormalizer()]);
+        $response = $serializer->normalize($process, 'json', ["attributes" => ['id' ,  'Process' , 'Delai' , 'Advancement']]);
+        return new JsonResponse($response);
+    }
 }

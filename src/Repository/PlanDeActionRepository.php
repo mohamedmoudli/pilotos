@@ -66,9 +66,9 @@ class PlanDeActionRepository extends ServiceEntityRepository
             ->addSelect('s.Process as Process')
             ->addSelect('count(p.currentStateActionPlan) as nbre')
             ->from('App\Entity\CurrentStateActionPlan', 'c')
-            ->leftjoin('App\Entity\ActionPlan', 'p', 'with', 'c.id = p.currentStateActionPlan')
-            ->leftjoin('App\Entity\Process', 's', 'with', 's.id = p.Process')
-            ->groupBy('s.id' , 'c.id' , 'p.Process' )
+            ->join('App\Entity\ActionPlan', 'p', 'with', 'c.id = p.currentStateActionPlan')
+            ->join('App\Entity\Process', 's', 'with', 's.id = p.Process')
+            ->groupBy('s.id' , 'c.id'  )
             ->getQuery()->getArrayResult();
         return $query;
     }
@@ -86,6 +86,25 @@ class PlanDeActionRepository extends ServiceEntityRepository
             ->from('App\Entity\Process', 's')
             ->join('App\Entity\ActionPlan', 'p', 'with', 's.id = p.Process')
             ->groupBy('s.id' )
+            ->getQuery()->getArrayResult();
+        return $query;
+    }
+
+    public function getAdvencementbyProcessbyTimeLimit()
+    {
+
+        $em = $this->getEntityManager();
+//        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
+//        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
+//        return $query->execute();
+        $query = $em->createQueryBuilder()->select('s.id as id')
+            ->addSelect('s.Process as process')
+            ->addSelect('p.Delai as Delai')
+            ->addSelect('AVG(p.Advancement) as moyAdvancement')
+            ->addSelect('p.Advancement as Advancement')
+            ->from('App\Entity\Process', 's')
+            ->leftJoin('App\Entity\ActionPlan', 'p', 'with', 's.id = p.Process')
+            ->groupBy('p.id' )
             ->getQuery()->getArrayResult();
         return $query;
     }
