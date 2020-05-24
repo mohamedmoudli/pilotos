@@ -24,14 +24,14 @@ class StakeController extends AbstractController
      * @Rest\Route("/GetCategoryInternalByStake", name="GetCategoryInternalByStake")
      * methods={"GET"}
      */
-    public function findbycategories1(Request $request)
+    public function CategoryInternalByStake(Request $request)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $categoriepi = $entityManager->getRepository(CategoryStakeInternal::class)->findAll();
+        $categoryStakeInternal = $entityManager->getRepository(CategoryStakeInternal::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriepi, 'json', ["attributes" => ['id', 'NameCategoryStakInternal', 'stakes' => ['id', 'Description', 'Type']]]);
+        $response = $serializer->normalize($categoryStakeInternal, 'json', ["attributes" => ['id', 'NameCategoryStakInternal', 'stakes' => ['id', 'Description', 'Type']]]);
 
         return new JsonResponse($response);
 
@@ -46,9 +46,9 @@ class StakeController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $categoriepi = $entityManager->getRepository(CategoryStakeExternal::class)->findAll();
+        $categoryStakeExternal = $entityManager->getRepository(CategoryStakeExternal::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriepi, 'json', ["attributes" => ['id', 'NameCategoryStakExternal', 'stakes' => ['id', 'Description', 'Type']]]);
+        $response = $serializer->normalize($categoryStakeExternal, 'json', ["attributes" => ['id', 'NameCategoryStakExternal', 'stakes' => ['id', 'Description', 'Type']]]);
 
         return new JsonResponse($response);
 
@@ -63,39 +63,34 @@ class StakeController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
         $pipertinante = $entityManager->getRepository(Stake::class)->getEnjeuForce($force);
-//        $res = json_encode($partieinteresse);
-//        $serializer=new Serializer([new ObjectNormalizer()]);
-//        $response=$serializer->normalize($partieinteresse,'json',["attributes"=>['id','NomPI','CategoriesPI'=>['nomcat']]]);
+
         return new JsonResponse($pipertinante);
     }
 
 
     /**
-     * @Route("/typebycategoriesbyenjeu", name="typebycategoriesbyenjeu")
+     * @Route("/TypebyCategorybyStake", name="TypebyCategorybyStake")
      * methods={"GET"}
      */
-    public function getEnjeuForce111(Request $request)
+    public function typebycategorybyStake(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $typeEnjeu = $entityManager->getRepository(TypeStake::class)->findAll();
+        $typeStake = $entityManager->getRepository(TypeStake::class)->findAll();
         $serializer=new Serializer([new ObjectNormalizer()]);
-        $response=$serializer->normalize($typeEnjeu,'json',["attributes"=>['id','NomType','categoriesEnjeuInternes'=>['id','NomCategories' , 'enjeus'=>['id' , 'Description']]]]);
+        $response=$serializer->normalize($typeStake,'json',["attributes"=>['id','NomType','categoriesEnjeuInternes'=>['id','NomCategories' , 'enjeus'=>['id' , 'Description']]]]);
         return new JsonResponse($response);
     }
 
     /**
-     * @Route("/nembreType", name="nembreType")
+     * @Route("/TypeCount", name="TypeCount")
      * methods={"GET"}
      */
-    public function getnbreType(Request $request )
+    public function getTypeCount(Request $request )
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(Stake::class)->getcoutType();
-//        $res = json_encode($partieinteresse);
-//        $serializer=new Serializer([new ObjectNormalizer()]);
-//        $response=$serializer->normalize($partieinteresse,'json',["attributes"=>['id','NomPI','CategoriesPI'=>['nomcat']]]);
-        return new JsonResponse($pipertinante);
+        $stakeTypeCount = $entityManager->getRepository(Stake::class)->getcoutType();
+        return new JsonResponse($stakeTypeCount);
     }
 }

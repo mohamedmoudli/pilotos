@@ -63,23 +63,19 @@ class OpportunityController extends AbstractController
             if($load >= 9 ){
                 $opportunity->setDecision('opportunité interssésante a saisir');
             }
-            $idStrategique = $request->get('idstrategic');
+            $idStrategic = $request->get('idstrategic');
             $idprocess = $request->get('idprocess');
-            $idcategorie = $request->get('idcategory');
+            $idcategory = $request->get('idcategory');
             $idEtatOpportunite = $request->get('idStateOpportunity');
 
-            $res = intval($idStrategique);
 
-            $res1 = intval($idprocess);
-
-            $res2 = intval($idcategorie);
-            $strategiquerisque = $em->getRepository(StrategicOpportunity::class)->findOneById($res);
+            $strategiquerisque = $em->getRepository(StrategicOpportunity::class)->findOneById($idStrategic);
 
 
             $opportunity->setStrategicOpportunity($strategiquerisque);
-            $processRisk = $em->getRepository(Process::class)->findOneById($res1);
+            $processRisk = $em->getRepository(Process::class)->findOneById($idprocess);
             $opportunity->setProcessLie($processRisk);
-            $CategoryRisk = $em->getRepository(CategoryOpportunity::class)->findOneById($res2);
+            $CategoryRisk = $em->getRepository(CategoryOpportunity::class)->findOneById($idcategory);
             $opportunity->setCategoryOpportunity($CategoryRisk);
             $StateOpportunity = $em->getRepository(StateOpportunity::class)->findOneById($idEtatOpportunite);
             dump($strategiquerisque);
@@ -101,7 +97,7 @@ class OpportunityController extends AbstractController
 
 
     /**
-     * @Route("/UpdateOppOrtunity/{id}", name="UpdateOppOrtunity")
+     * @Route("/UpdateOpportunity/{id}", name="UpdateOpportunity")
      */
     public function ReevaluateOpportunity(Request $request , $id): Response
     {
@@ -128,25 +124,20 @@ class OpportunityController extends AbstractController
             if($load >= 9 ){
                 $opportunity->setDecisionReevaluation('opportunité interssésante a saisir');
             }
-            $idStrategique = $request->get('idstrategicReevaluation');
+            $idStrategic = $request->get('idstrategicReevaluation');
             $idprocess = $request->get('idprocessReevaluation');
-            $idcategorie = $request->get('idcategoryReevaluation');
-            $idopportunite = $request->get('idStateOpportunityReevaluation');
+            $idcategory = $request->get('idcategoryReevaluation');
+            $idStateOpportunity = $request->get('idStateOpportunityReevaluation');
 
-            $res = intval($idStrategique);
-
-            $res1 = intval($idprocess);
-
-            $res2 = intval($idcategorie);
-            $strategiqueOpportunite = $em->getRepository(StrategicOpportunity::class)->findOneById($res);
+            $strategiqueOpportunite = $em->getRepository(StrategicOpportunity::class)->findOneById($idStrategic);
 
 
             $opportunity->setStrategicReevaluation($strategiqueOpportunite);
 
-            $processOpportunite = $em->getRepository(Process::class)->findOneById($res1);
+            $processOpportunite = $em->getRepository(Process::class)->findOneById($idprocess);
 
             $opportunity->setProcessLieReevaluation($processOpportunite );
-            $processOpportunity = $em->getRepository(StateOpportunity::class)->findOneById($idopportunite);
+            $processOpportunity = $em->getRepository(StateOpportunity::class)->findOneById($idStateOpportunity);
 
             $opportunity->setStateOpportunityReevaluation($processOpportunity);
 
@@ -173,14 +164,14 @@ class OpportunityController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $pipertinantes = $entityManager->getRepository(Opportunity::class)->findAll();
+        $opportunitys = $entityManager->getRepository(Opportunity::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($pipertinantes, 'json', ["attributes" => ['id' , 'StateOpportunity' , 'Comment' ,  'NumAction'=> ['id' ]]]);
+        $response = $serializer->normalize($opportunitys, 'json', ["attributes" => ['id' , 'StateOpportunity' , 'Comment' ,  'NumAction'=> ['id' ]]]);
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
-            foreach ($response as  $pipertinante ){
+            foreach ($response as  $historicalopportunity ){
                 $historicalOpportunity = new HistoricalOpportunity();
-                $opportunity = $this->getDoctrine()->getRepository(Opportunity::class)->find($pipertinante['id']);
+                $opportunity = $this->getDoctrine()->getRepository(Opportunity::class)->find($historicalopportunity['id']);
 
                 $numActions = new ActionPlan();
                 $numActions = $opportunity->getNumAction();
@@ -212,15 +203,15 @@ class OpportunityController extends AbstractController
     }
 
     /**
-     * @Route("/GetOpportunityByAction", name="GetOpportunityByAction")
+     * @Route("/GetOpportunity", name="GetOpportunity")
      * methods={"GET"}
      */
-    public function GetOpportunityByAction(Request $request)
+    public function GetOpportunity(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Opportunity::class)->findAll();
+        $opportunity = $entityManager->getRepository(Opportunity::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,'Description' ,'ShortTerm' , 'MediumTerm' ,'LongTerm' ,
+        $response = $serializer->normalize($opportunity , 'json', ["attributes" => ['id' ,'Description' ,'ShortTerm' , 'MediumTerm' ,'LongTerm' ,
             'DateIdentification' ,  'Consistency' , 'Alignment' ,'Presence' , 'Skills' , 'Continuity' , 'Gain' , 'Efforts' ,
              'Advantage' , 'Weight' , 'Decision' ,'StrategicOpportunity'  , 'ProcessLie' , 'CategoryOpportunity' , 'StateOpportunity' ,
             'EffortReevaluation' , 'AdvantageReevaluation' , 'LoadReevaluation' ,'DecisionReevaluation' , 'StrategicReevaluation' ,
@@ -237,9 +228,9 @@ class OpportunityController extends AbstractController
     public function GethistoricalOpportunity(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $historiqueOpportunite = $entityManager->getRepository(HistoricalOpportunity::class)->findAll();
+        $historicalOpportunity = $entityManager->getRepository(HistoricalOpportunity::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($historiqueOpportunite, 'json', ["attributes" => ['id' ,  'Etat' , 'Commentaire'  ,'Date' ,
+        $response = $serializer->normalize($historicalOpportunity, 'json', ["attributes" => ['id' ,  'Etat' , 'Commentaire'  ,'Date' ,
              'NumeroAction'=> ['id' , 'Origin']]]);
         return new JsonResponse($response);
     }
@@ -248,30 +239,30 @@ class OpportunityController extends AbstractController
 
 
     /**
-     * @Route("/GetNbreEtatOpportunite", name="GetNbreEtatOpportunite")
+     * @Route("/GetOpportunityNumberState", name="GetOpportunityNumberState")
      * methods={"GET"}
      */
-    public function GetNbreEtatOpportunite(Request $request)
+    public function GetOpportunityNumberState(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Opportunity::class)->getNbreEtatOpportunite();
+        $categoryrisk = $entityManager->getRepository(Opportunity::class)->getNbreEtatOpportunite();
 
 
-        return new JsonResponse($categoriesrisque);
+        return new JsonResponse($categoryrisk);
     }
 
 
     /**
-     * @Route("/GetNbreCategorieOpportunite", name="GetNbreCategorieOpportunite")
+     * @Route("/GetOpportunityCategoryNumber", name="GetOpportunityCategoryNumber")
      * methods={"GET"}
      */
-    public function GetNbreCategorieOpportunite(Request $request)
+    public function GetOpportunityCategoryNumber(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(Opportunity::class)->getNbreCategorieOpportunite();
+        $categoryrisk = $entityManager->getRepository(Opportunity::class)->getNbreCategorieOpportunite();
 
 
-        return new JsonResponse($categoriesrisque);
+        return new JsonResponse($categoryrisk);
     }
 
 }

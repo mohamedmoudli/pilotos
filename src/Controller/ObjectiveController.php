@@ -45,9 +45,9 @@ class ObjectiveController extends AbstractController
             $idprocess = $request->get('idprocess');
 
 
-            $res = intval($idStake);
+            $Stake = intval($idStake);
 
-            $res1 = intval($idprocess);
+            $process = intval($idprocess);
             $objective->setDescription($request->request->get('Description'));
             $objective->setTime1($request->request->get('Time1'));
             $objective->setTime2($request->request->get('Time2'));
@@ -59,7 +59,7 @@ class ObjectiveController extends AbstractController
             $objective->setPredefinedIndicator($indicateur);
             if($indicateur){
                 $processus = new Process();
-                $processus = $em->getRepository(Process::class)->findOneById($res1);
+                $processus = $em->getRepository(Process::class)->findOneById($process);
                 $objective->setPerformanceIndicator($processus->getPerformanceIndicator());
             }else{
                 $objective->setPerformanceIndicator($request->request->get('PerformanceIndicator'));
@@ -71,14 +71,14 @@ class ObjectiveController extends AbstractController
             $objective->setCurrentStateIndiactor($request->request->get('CurrentStateIndiactor'));
             $objective->setComment($request->request->get('Comment'));
 
-            $stake = $em->getRepository(Stake::class)->findOneById($res);
+            $stake = $em->getRepository(Stake::class)->findOneById($Stake);
 
 
 
             $objective->setStake($stake);
             $objective->setDescriptionStake($stake->getDescription());
-            $processRisque = $em->getRepository(Process::class)->findOneById($res1);
-            $objective->setProcessLie($processRisque);
+            $process = $em->getRepository(Process::class)->findOneById($process);
+            $objective->setProcessLie($process);
 
             $em->persist($objective);
 
@@ -92,10 +92,10 @@ class ObjectiveController extends AbstractController
 
 
     /**
-     * @Route("/saveAvencementObjective", name="saveAvencementObjective")
+     * @Route("/SaveAdvancementObjective", name="SaveAdvancementObjective")
      * methods={"GET"}
      */
-    public function saveAvencementObjective(Request $request )
+    public function SaveAdvancementObjective(Request $request )
     {
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -106,21 +106,21 @@ class ObjectiveController extends AbstractController
 
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
-            foreach ($response as  $pipertinante ){;
-                $Objective = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
+            foreach ($response as  $revelantInterestedParty ){;
+                $Objective = $this->getDoctrine()->getRepository(Objective::class)->find($revelantInterestedParty['id']);
 
                 $numActions = $Objective->getNumAction();
                 $objective = new Objective();
-                $somme =0;
+                $sum =0;
                 $count =0;
                 foreach ($numActions as  $numAction ){
                     $count =$count + 1;
-                    $somme = $somme + $numAction->getAdvancement();
+                    $sum = $sum + $numAction->getAdvancement();
 
                 }
 
                 if($count){
-                    $Objective->setAdvancement($somme/$count);
+                    $Objective->setAdvancement($sum/$count);
                 }
 
 
@@ -153,9 +153,9 @@ class ObjectiveController extends AbstractController
 
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
-            foreach ($response as  $pipertinante ){
+            foreach ($response as  $revelantInterestedParty ){
                 $historical = new historicalObjective();
-                $objective = $this->getDoctrine()->getRepository(Objective::class)->find($pipertinante['id']);
+                $objective = $this->getDoctrine()->getRepository(Objective::class)->find($revelantInterestedParty['id']);
                 $stake = new Stake();
                 $stake = $objective->getStake();
                 $processlie = new Process();
@@ -200,13 +200,11 @@ class ObjectiveController extends AbstractController
 
 
     /**
-     * @Route("/GetObjectiveByAction", name="GetObjectiveByAction")
+     * @Route("/GetObjective", name="GetObjective")
      * methods={"GET"}
      */
 
-
-
-    public function GetObjectiveByAction(Request $request)
+    public function GetObjective(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $objectives = $entityManager->getRepository(Objective::class)->findAll();

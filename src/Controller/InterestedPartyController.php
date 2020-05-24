@@ -26,17 +26,17 @@ class InterestedPartyController extends AbstractController
 
 
     /**
-     * @Route("/partieinteresse/cat1", name="partie_interesse12")
+     * @Route("/InterestedPartyByCategory", name="InterestedPartyByCategory")
      * methods={"GET"}
      */
-    public function findbycategory(Request $request)
+    public function InterestedPartyByCategory(Request $request)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $categorypi = $entityManager->getRepository(CategoryeInterestedParty::class)->findAll();
+        $categoryInterestedParty = $entityManager->getRepository(CategoryeInterestedParty::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categorypi, 'json', ["attributes" => ['id', 'NameCategory', 'intersetedParties' => ['id', 'NameInterestedParty', 'Weight']]]);
+        $response = $serializer->normalize($categoryInterestedParty, 'json', ["attributes" => ['id', 'NameCategory', 'intersetedParties' => ['id', 'NameInterestedParty', 'Weight']]]);
 
         return new JsonResponse($response);
 
@@ -46,10 +46,10 @@ class InterestedPartyController extends AbstractController
 
 
     /**
-     * @Route("/GetExigencyByAction", name="GetExigencyByAction")
+     * @Route("/GetExigency", name="GetExigency")
      * methods={"GET"}
      */
-    public function GetExigencyByAction(Request $request)
+    public function GetExigency(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
@@ -64,45 +64,39 @@ class InterestedPartyController extends AbstractController
 
 
     /**
-     * @Route("/nbreCategories", name="nbre_categorie")
+     * @Route("/CategoryNumber", name="CategoryNumber")
      * methods={"GET"}
      */
-    public function getNbreCategory(Request $request)
+    public function getCategoryNumber(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
         $intersetedParty = $entityManager->getRepository(IntersetedParty::class)->getNbreCategory();
-//        $res = json_encode($partieinteresse);
-//        $serializer=new Serializer([new ObjectNormalizer()]);
-//        $response=$serializer->normalize($partieinteresse,'json',["attributes"=>['id','NomPI','CategoriesPI'=>['nomcat']]]);
         return new JsonResponse($intersetedParty);
     }
 
     /**
-     * @Route("/pipertinante/{threshold}", name="pipertinante")
+     * @Route("/RevelantInterestedParty/{threshold}", name="RevelantInterestedParty")
      * methods={"GET"}
      */
-    public function getPIpertinante(Request $request , $threshold )
+    public function getRevelantInterestedParty(Request $request , $threshold )
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($threshold);
-//        $res = json_encode($partieinteresse);
-//        $serializer=new Serializer([new ObjectNormalizer()]);
-//        $response=$serializer->normalize($partieinteresse,'json',["attributes"=>['id','NomPI','CategoriesPI'=>['nomcat']]]);
-        return new JsonResponse($pipertinante);
+        $revelantInterestedParty = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($threshold);
+        return new JsonResponse($revelantInterestedParty);
     }
 
     /**
-     * @Route("/savehistorique/{seul}", name="savehistorique")
+     * @Route("/SaveHistoricalInterestedParty/{id}", name="SaveHistoricalInterestedParty")
      * methods={"GET"}
      */
-    public function savehistoriquePI(Request $request , $seul)
+    public function SaveHistoricalInterestedParty(Request $request , $id)
     {
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $intersetedParties = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($seul);
+        $intersetedParties = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($id);
 
 
         if(count($intersetedParties)){
@@ -117,32 +111,28 @@ class InterestedPartyController extends AbstractController
                 $entityManager->flush();
             }
         }
-//        $res = json_encode($partieinteresse);
-
         return new JsonResponse('sucess');
     }
 
 
     /**
-     * @Route("/getPoids/{id}", name="getPoids")
+     * @Route("/getWeight/{id}", name="getWeight")
      */
-    public function calculepoids(Request $request , $id): Response
+    public function countweight(Request $request , $id): Response
     {
         if ($request->isMethod('POST')) {
             $button = $request->get('nom_champ');
-            $partieinteresse = new IntersetedParty();
+            $interestedParty = new IntersetedParty();
             if ($button === 'interet'){
                 $em = $this->getDoctrine()->getManager();
-                $partieinteresse = $em->getRepository(IntersetedParty::class)->findById($id);
+                $interestedParty = $em->getRepository(IntersetedParty::class)->findById($id);
                 /* @var $partieinteresse IntersetedParty */
-                $partieinteresse[0]->setInterest($request->get('Interest'));
-                $partieinteresse[0]->setInfluence($request->get('influence'));
-                $poid= $request->get('influence') * $request->get('Interest');
+                $interestedParty[0]->setInterest($request->get('Interest'));
+                $interestedParty[0]->setInfluence($request->get('influence'));
+                $Weight = $request->get('influence') * $request->get('Interest');
+                $interestedParty[0]->setWeight($Weight);
 
-                dump($poid);
-                $partieinteresse[0]->setWeight($poid);
-
-                $em->persist($partieinteresse[0]);
+                $em->persist($interestedParty[0]);
                 $em->flush();
 
                 return new Response('true', 200);
@@ -154,10 +144,8 @@ class InterestedPartyController extends AbstractController
                 /* @var $partieinteresse IntersetedParty */
                 $intersetedParty[0]->setPower($request->get('Power'));
                 $intersetedParty[0]->setInfluence($request->get('influence'));
-                $load= $request->get('influence') * $request->get('Power');
-
-                dump($load);
-                $intersetedParty[0]->setWeight($load);
+                $Weight= $request->get('influence') * $request->get('Power');
+                $intersetedParty[0]->setWeight($Weight);
 
                 $em->persist($intersetedParty[0]);
                 $em->flush();

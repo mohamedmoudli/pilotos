@@ -31,7 +31,7 @@ class RiskControlleur extends AbstractController
 {
 
     /**
-     * @Route("/saveRisk", name="getRisque")
+     * @Route("/createRisk", name="createRisk")
      */
     public function createRisk(Request $request): Response
     {
@@ -69,19 +69,14 @@ class RiskControlleur extends AbstractController
             $idprocess = $request->get('idprocess');
             $idcategory = $request->get('idcategory');
             $idstateRisk = $request->get('idStateRisk');
-            dump($idStrategic);
-            $res = intval($idStrategic);
-            dump($res);
-            $res1 = intval($idprocess);
-            dump($res1);
-            $res2 = intval($idcategory);
-            $strategicrisk = $em->getRepository(StrategicRisk::class)->findOneById($res);
+
+            $strategicrisk = $em->getRepository(StrategicRisk::class)->findOneById($idStrategic);
             dump($strategicrisk);
 
             $risque->setStrategicRisk($strategicrisk);
-            $processRisk = $em->getRepository(Process::class)->findOneById($res1);
+            $processRisk = $em->getRepository(Process::class)->findOneById($idprocess);
             $risque->setProcess($processRisk);
-            $CategoriyRisk = $em->getRepository(CategoryRisk::class)->findOneById($res2);
+            $CategoriyRisk = $em->getRepository(CategoryRisk::class)->findOneById($idcategory);
             $risque->setCategoryRisk($CategoriyRisk);
             $stateRisk = $em->getRepository(StateRisk::class)->findOneById($idstateRisk);
             $risque->setStateRisk($stateRisk);
@@ -112,9 +107,9 @@ class RiskControlleur extends AbstractController
 
         if(count($response)){
             /** @var IntersetedParty $pipertinante */
-            foreach ($response as  $pipertinante ){
+            foreach ($response as  $histricalrisk ){
                 $historicalRisk = new HistoricalRisk();
-                $risk = $this->getDoctrine()->getRepository(Risk::class)->find($pipertinante['id']);
+                $risk = $this->getDoctrine()->getRepository(Risk::class)->find($histricalrisk['id']);
                 $strategic = new StrategicRisk();
                 $strategic = $risk->getStrategicRisk();
                 $processlie = new Process();
@@ -151,10 +146,10 @@ class RiskControlleur extends AbstractController
 
 
     /**
-     * @Route("/getRisk", name="getRisk")
+     * @Route("/GetRisk", name="GetRisk")
      * methods={"GET"}
      */
-    public function GetRiskByAction(Request $request)
+    public function GetRisk(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $risk = $entityManager->getRepository(Risk::class)->findAll();
@@ -165,10 +160,10 @@ class RiskControlleur extends AbstractController
 
 
     /**
-     * @Route("/GetByAction", name="GetbyRisque")
+     * @Route("/GetRiskbyaction", name="GetbyRisquebyaction")
      * methods={"GET"}
      */
-    public function GetRisk(Request $request)
+    public function GetRiskbyaction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $categoryrisk = $entityManager->getRepository(Risk::class)->findAll();
@@ -178,7 +173,7 @@ class RiskControlleur extends AbstractController
     }
 
     /**
-     * @Route("/gethistoricalRisk", name="gethistoricalRisk")
+     * @Route("/GethistoricalRisk", name="GethistoricalRisk")
      * methods={"GET"}
      */
     public function GethistoricalRisk(Request $request)
@@ -194,10 +189,10 @@ class RiskControlleur extends AbstractController
 
 
     /**
-     * @Route("/GetNbreEtatRisque", name="GetNbreEtatRisque")
+     * @Route("/GetNbreRiskState", name="GetNbreRiskState")
      * methods={"GET"}
      */
-    public function GetNbreEtatRisque(Request $request)
+    public function GetNbreRiskState(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $nbState = $entityManager->getRepository(Risk::class)->getNbreStateRisk();
@@ -208,10 +203,10 @@ class RiskControlleur extends AbstractController
 
 
     /**
-     * @Route("/GetNbreCategorieRisque", name="GetNbreCategorieRisque")
+     * @Route("/GetcategoryriskNumber", name="GetcategoryriskNumber")
      * methods={"GET"}
      */
-    public function GetNbreCategorieRisque(Request $request)
+    public function GetcategoryriskNumber(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $nbcategory = $entityManager->getRepository(Risk::class)->getNbreCategoryRisk();

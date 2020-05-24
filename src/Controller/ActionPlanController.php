@@ -28,15 +28,15 @@ use Symfony\Component\Serializer\Serializer;
 class ActionPlanController extends AbstractController
 {
     /**
-     * @Route("/GetPlanActionByAction", name="GetPlanActionByAction")
+     * @Route("/GetPlanAction", name="GetPlanAction")
      * methods={"GET"}
      */
-    public function GetPlanActionByAction(Request $request)
+    public function GetPlanAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoriesrisque = $entityManager->getRepository(ActionPlan::class)->findAll();
+        $planAction = $entityManager->getRepository(ActionPlan::class)->findAll();
         $serializer = new Serializer([new ObjectNormalizer()]);
-        $response = $serializer->normalize($categoriesrisque, 'json', ["attributes" => ['id' ,'Origin' , 'Description' , 'Action' , 'StartDatePanifies' ,'Delai' ,
+        $response = $serializer->normalize($planAction, 'json', ["attributes" => ['id' ,'Origin' , 'Description' , 'Action' , 'StartDatePanifies' ,'Delai' ,
             'Responsible' ,  'Director' , 'Consult' ,'Advancement' , 'Comment' , 'ClosingCriterion' , 'ProofOfClosure' , 'CriteriaEfficiency' ,
             'stateEfficacyActionPlan' , 'currentStateActionPlan' , 'ExigencyInterestedParty'=>['id'] ,'Risk'=>['id']  , 'Opportunity'=>['id'] , 'OpportunityReevalution'=>['id'] , 'Objective'=>['id'] ]]);
         return new JsonResponse($response);
@@ -123,62 +123,60 @@ class ActionPlanController extends AbstractController
 
 
     /**
-     * @Route("/nembreStateEfficacity", name="nembreStateEfficacity")
+     * @Route("/EfficientStateNumber", name="EfficientStateNumber")
      * methods={"GET"}
      */
-    public function nembreStateEfficacity(Request $request )
+    public function EfficientStateNumber(Request $request )
     {
         $entityManager = $this->getDoctrine()->getManager();
-        /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountStateEfficacity();
-        return new JsonResponse($pipertinante);
+        $planAction = $entityManager->getRepository(ActionPlan::class)->getCountStateEfficacity();
+        return new JsonResponse($planAction);
     }
 
     /**
-     * @Route("/nembreCurrentState", name="nembreCurrentState")
+     * @Route("/CurrentStateNumber", name="CurrentStateNumber")
      * methods={"GET"}
      */
-    public function nembreCurrentState(Request $request )
+    public function CurrentStateNumber(Request $request )
     {
         $entityManager = $this->getDoctrine()->getManager();
-        /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountCurrentState();
-        return new JsonResponse($pipertinante);
+        $planAction = $entityManager->getRepository(ActionPlan::class)->getCountCurrentState();
+        return new JsonResponse($planAction);
     }
 
     /**
-     * @Route("/nembreCurrentStatebyProcess", name="nembreCurrentStatebyProcess")
+     * @Route("/CurrentStateNumberbyProcess", name="CurrentStateNumberbyProcess")
      * methods={"GET"}
      */
-    public function nembreCurrentStatebyProcess(Request $request )
+    public function CurrentStateNumberbyProcess(Request $request )
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getCountCurrentStatebyProcess();
-        return new JsonResponse($pipertinante);
+        $planAction = $entityManager->getRepository(ActionPlan::class)->getCountCurrentStatebyProcess();
+        return new JsonResponse($planAction);
     }
     /**
-     * @Route("/nembreAvencementbyProcess", name="nembreAvencementbyProcess")
+     * @Route("/AdvancementNumberbyProcess", name="AdvancementNumberbyProcess")
      * methods={"GET"}
      */
-    public function nembreAvencementbyProcess(Request $request )
+    public function AdvancementNumberbyProcess(Request $request )
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcess();
-        return new JsonResponse($pipertinante);
+        $planAction = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcess();
+        return new JsonResponse($planAction);
     }
 
     /**
-     * @Route("/nembreAvencementbyProcessbyTimeLimit", name="nembreAvencementbyProcessbyTimeLimit")
+     * @Route("/AdvancementNumberbyProcessbyTimeLimit", name="AdvancementNumberbyProcessbyTimeLimit")
      * methods={"GET"}
      */
-    public function nembreAvencementbyProcessbyTimeLimit(Request $request )
+    public function AdvancementNumberbyProcessbyTimeLimit(Request $request )
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcessbyTimeLimit();
-        return new JsonResponse($pipertinante);
+        $planAction = $entityManager->getRepository(ActionPlan::class)->getAdvencementbyProcessbyTimeLimit();
+        return new JsonResponse($planAction);
     }
 
     /**
