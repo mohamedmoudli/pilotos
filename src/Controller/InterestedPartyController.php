@@ -71,7 +71,7 @@ class InterestedPartyController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $intersetedParty = $entityManager->getRepository(IntersetedParty::class)->getNbreCategory();
+        $intersetedParty = $entityManager->getRepository(IntersetedParty::class)->getCategoryNumber();
         return new JsonResponse($intersetedParty);
     }
 
@@ -83,7 +83,7 @@ class InterestedPartyController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         /* @var $partieinteresse IntersetedParty */
-        $revelantInterestedParty = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($threshold);
+        $revelantInterestedParty = $entityManager->getRepository(IntersetedParty::class)->getInterestedPartyRevelant($threshold);
         return new JsonResponse($revelantInterestedParty);
     }
 
@@ -96,15 +96,15 @@ class InterestedPartyController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $intersetedParties = $entityManager->getRepository(IntersetedParty::class)->getPIpertinante($id);
+        $intersetedParties = $entityManager->getRepository(IntersetedParty::class)->getInterestedPartyRevelant($id);
 
 
         if(count($intersetedParties)){
-            /** @var IntersetedParty $pipertinante */
-            foreach ($intersetedParties as  $pipertinante ){
+            /** @var IntersetedParty $interestedparty */
+            foreach ($intersetedParties as  $interestedparty ){
                 $historicalIntersetedParty = new HistoricalIntersetedParty();
-                $intersetedParty = $this->getDoctrine()->getRepository(IntersetedParty::class)->find($pipertinante['id']);
-                $historicalIntersetedParty->setPoids($intersetedParty->getPower());
+                $intersetedParty = $this->getDoctrine()->getRepository(IntersetedParty::class)->find($interestedparty['id']);
+                $historicalIntersetedParty->setPoids($intersetedParty->getWeight());
                 $historicalIntersetedParty->setNomPI($intersetedParty->getNameInterestedParty());
                 $historicalIntersetedParty->setDate(new \DateTime());
                 $entityManager->persist($historicalIntersetedParty);

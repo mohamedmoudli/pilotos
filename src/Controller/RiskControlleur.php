@@ -71,7 +71,7 @@ class RiskControlleur extends AbstractController
             $idstateRisk = $request->get('idStateRisk');
 
             $strategicrisk = $em->getRepository(StrategicRisk::class)->findOneById($idStrategic);
-            dump($strategicrisk);
+
 
             $risque->setStrategicRisk($strategicrisk);
             $processRisk = $em->getRepository(Process::class)->findOneById($idprocess);
@@ -195,7 +195,7 @@ class RiskControlleur extends AbstractController
     public function GetNbreRiskState(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $nbState = $entityManager->getRepository(Risk::class)->getNbreStateRisk();
+        $nbState = $entityManager->getRepository(Risk::class)->getStateRiskNumber();
 
 
         return new JsonResponse($nbState);
@@ -209,7 +209,7 @@ class RiskControlleur extends AbstractController
     public function GetcategoryriskNumber(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $nbcategory = $entityManager->getRepository(Risk::class)->getNbreCategoryRisk();
+        $nbcategory = $entityManager->getRepository(Risk::class)->getcategoryriskNumber();
 
 
         return new JsonResponse($nbcategory);

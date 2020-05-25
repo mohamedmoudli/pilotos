@@ -21,7 +21,7 @@ class OpportunityRepository extends ServiceEntityRepository
 
 
 
-    public function getNbreEtatOpportunite(){
+    public function getOpportunityNumberState(){
         $em = $this->getEntityManager();
 //        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
 //        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
@@ -36,7 +36,7 @@ class OpportunityRepository extends ServiceEntityRepository
         return $query;
     }
 
-    public function getNbreCategorieOpportunite(){
+    public function getOpportunityCategoryNumber(){
         $em = $this->getEntityManager();
 //        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
 //        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");

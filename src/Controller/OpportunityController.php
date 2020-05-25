@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Serializer;
 class OpportunityController extends AbstractController
 {
     /**
-     * @Route("/CreateOppOrtunite", name="CreateOppOrtunite")
+     * @Route("/CreateOpportunite", name="CreateOpportunite")
      */
     public function createOpportunity(Request $request): Response
     {
@@ -78,7 +78,6 @@ class OpportunityController extends AbstractController
             $CategoryRisk = $em->getRepository(CategoryOpportunity::class)->findOneById($idcategory);
             $opportunity->setCategoryOpportunity($CategoryRisk);
             $StateOpportunity = $em->getRepository(StateOpportunity::class)->findOneById($idEtatOpportunite);
-            dump($strategiquerisque);
             $opportunity->setStateOpportunity($StateOpportunity);
             $opportunity->setComment($request->request->get('Comment'));
 
@@ -112,7 +111,6 @@ class OpportunityController extends AbstractController
             $opportunity->setAdvantageReevaluation($request->request->get('AventageReevaluation'));
             $load = $request->request->get('EffortReevaluation') * $request->request->get('AventageReevaluation');
             $opportunity->setloadReevaluation($load);
-            dump($load);
             if($load < 4 ){
                 $opportunity->setDecisionReevaluation('opportunité negligable a ignorer');
             }
@@ -245,10 +243,10 @@ class OpportunityController extends AbstractController
     public function GetOpportunityNumberState(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoryrisk = $entityManager->getRepository(Opportunity::class)->getNbreEtatOpportunite();
+        $stateOpportunity = $entityManager->getRepository(Opportunity::class)->getOpportunityNumberState();
 
 
-        return new JsonResponse($categoryrisk);
+        return new JsonResponse($stateOpportunity);
     }
 
 
@@ -259,10 +257,9 @@ class OpportunityController extends AbstractController
     public function GetOpportunityCategoryNumber(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $categoryrisk = $entityManager->getRepository(Opportunity::class)->getNbreCategorieOpportunite();
+        $categoryOpportunity = $entityManager->getRepository(Opportunity::class)->getOpportunityCategoryNumber();
 
-
-        return new JsonResponse($categoryrisk);
+        return new JsonResponse($categoryOpportunity);
     }
 
 }

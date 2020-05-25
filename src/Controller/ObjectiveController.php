@@ -152,10 +152,10 @@ class ObjectiveController extends AbstractController
             'Advancement', 'Commentaire' , 'CurrentState' , 'planDeActions'=> ['id' , 'Origine']]]);
 
         if(count($response)){
-            /** @var IntersetedParty $pipertinante */
-            foreach ($response as  $revelantInterestedParty ){
+
+            foreach ($response as  $Objective ){
                 $historical = new historicalObjective();
-                $objective = $this->getDoctrine()->getRepository(Objective::class)->find($revelantInterestedParty['id']);
+                $objective = $this->getDoctrine()->getRepository(Objective::class)->find($Objective['id']);
                 $stake = new Stake();
                 $stake = $objective->getStake();
                 $processlie = new Process();

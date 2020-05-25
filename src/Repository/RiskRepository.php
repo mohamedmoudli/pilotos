@@ -40,7 +40,7 @@ class RiskRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function getNbreStateRisk(){
+    public function getStateRiskNumber(){
         $em = $this->getEntityManager();
 //        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
 //        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
@@ -55,7 +55,7 @@ class RiskRepository extends ServiceEntityRepository
         return $query;
     }
 
-    public function getNbreCategoryRisk(){
+    public function getcategoryriskNumber(){
         $em = $this->getEntityManager();
 //        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
 //        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");

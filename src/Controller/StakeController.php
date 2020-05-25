@@ -55,34 +55,6 @@ class StakeController extends AbstractController
     }
 
     /**
-     * @Route("/enjeuForce/{force}", name="enjeuForce")
-     * methods={"GET"}
-     */
-    public function getEnjeuForce(Request $request , $force)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        /* @var $partieinteresse IntersetedParty */
-        $pipertinante = $entityManager->getRepository(Stake::class)->getEnjeuForce($force);
-
-        return new JsonResponse($pipertinante);
-    }
-
-
-    /**
-     * @Route("/TypebyCategorybyStake", name="TypebyCategorybyStake")
-     * methods={"GET"}
-     */
-    public function typebycategorybyStake(Request $request)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        /* @var $partieinteresse IntersetedParty */
-        $typeStake = $entityManager->getRepository(TypeStake::class)->findAll();
-        $serializer=new Serializer([new ObjectNormalizer()]);
-        $response=$serializer->normalize($typeStake,'json',["attributes"=>['id','NomType','categoriesEnjeuInternes'=>['id','NomCategories' , 'enjeus'=>['id' , 'Description']]]]);
-        return new JsonResponse($response);
-    }
-
-    /**
      * @Route("/TypeCount", name="TypeCount")
      * methods={"GET"}
      */

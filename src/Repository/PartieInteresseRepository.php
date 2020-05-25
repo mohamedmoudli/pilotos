@@ -19,7 +19,7 @@ class PartieInteresseRepository extends ServiceEntityRepository
         parent::__construct($registry, IntersetedParty::class);
     }
 
-    public function getNbreCategory(){
+    public function getCategoryNumber(){
         $em = $this->getEntityManager();
 //        $query = $em->createQuery("SELECT c.id as id, c.nomcat as nomcat, COUNT(p.CategoriesPI) as nbre
 //        FROM App\Entity\IntersetedParty p left outer JOIN App\Entity\CategoryeInterestedParty c where c.id = p.CategoriesPI GROUP BY p.CategoriesPI");
@@ -33,7 +33,7 @@ class PartieInteresseRepository extends ServiceEntityRepository
             ->getQuery()->getArrayResult();
         return $query;
     }
-    public function getPIpertinante(int $threshold){
+    public function getInterestedPartyRevelant(int $threshold){
         $em = $this->getEntityManager();
         $query = $em->createQuery("SELECT p.id as id,  p.Interest as Interest , p.Influence as Influence , p.Power as Power , p.Weight as Weight , p.NameInterestedParty as NameInterestedParty FROM App\Entity\IntersetedParty p
          join App\Entity\CategoryeInterestedParty c where c.id = p.CategoryInterestedParty
